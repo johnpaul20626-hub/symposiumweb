@@ -24,7 +24,7 @@ const EventDetail = () => {
         const fetchEvent = async () => {
             try {
                 // Fetch basic info from backend
-                const res = await axios.get('http://localhost:5001/api/events');
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/events`);
                 const basicInfo = res.data[id];
 
                 if (basicInfo) {

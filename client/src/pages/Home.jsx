@@ -13,7 +13,7 @@ const Home = () => {
         const fetchStats = async () => {
             try {
                 // Fetch dynamic stats from backend
-                const res = await fetch('http://localhost:5001/api/events/stats');
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events/stats`);
                 if (res.ok) {
                     const data = await res.json();
                     setStats({

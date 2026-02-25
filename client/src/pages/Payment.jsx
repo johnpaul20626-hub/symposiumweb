@@ -22,7 +22,7 @@ const Payment = () => {
 
     const processRegistration = async (paymentId) => {
         try {
-            await axios.post('http://localhost:5001/api/events/register', {
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/events/register`, {
                 ...registrationData,
                 transactionId: paymentId,
                 amountPaid: 500 // Hardcoded for now
@@ -41,7 +41,7 @@ const Payment = () => {
         setError('');
         try {
             // 1. Create Order (Mock)
-            await axios.post('http://localhost:5001/api/payment/create-order', { amount: 500 }); // Fixed fee for now
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/payment/create-order`, { amount: 500 }); // Fixed fee for now
 
             // 2. Simulate Payment Success
             setTimeout(() => {

@@ -21,7 +21,7 @@ const EventRegistration = () => {
         phoneNumber: '',
         teamName: '',
         teamMembers: [],
-        paymentScreenshot: null // For file upload
+        transactionId: '' // Changed from paymentScreenshot to string ID
     });
 
     const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -34,7 +34,7 @@ const EventRegistration = () => {
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/events');
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/events`);
                 if (res.data[eventCode]) {
                     setEventDetails({ ...res.data[eventCode], code: eventCode });
                 } else {
@@ -54,8 +54,8 @@ const EventRegistration = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleFileChange = (e) => {
-        setFormData({ ...formData, paymentScreenshot: e.target.files[0] });
+    const handleTransactionChange = (e) => {
+        setFormData({ ...formData, transactionId: e.target.value.trim() });
     };
 
     const handleInitialSubmit = (e) => {
@@ -71,8 +71,8 @@ const EventRegistration = () => {
     };
 
     const handleFinalSubmit = async () => {
-        if (!formData.paymentScreenshot) {
-            setError("Please upload the payment screenshot.");
+        if (!formData.transactionId || formData.transactionId.length < 5) {
+            setError("Please enter a valid Transaction ID.");
             return;
         }
 
@@ -80,19 +80,15 @@ const EventRegistration = () => {
         setError('');
 
         try {
-            const data = new FormData();
-            Object.keys(formData).forEach(key => {
-                if (key === 'teamMembers') {
-                    data.append(key, JSON.stringify(formData[key]));
-                } else {
-                    data.append(key, formData[key]);
-                }
-            });
-            data.append('eventCode', eventCode);
-            data.append('amountPaid', eventDetails.fee);
+            // Send standard JSON instead of FormData
+            const payload = {
+                ...formData,
+                eventCode,
+                amountPaid: eventDetails.fee
+            };
 
-            await axios.post('http://localhost:5001/api/events/register', data, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/events/register`, payload, {
+                headers: { 'Content-Type': 'application/json' }
             });
 
             setSuccess(true);
@@ -381,21 +377,19 @@ const EventRegistration = () => {
                                 )}
 
                                 <div className="space-y-6">
-                                    <label className="block w-full cursor-pointer group">
-                                        <div className="bg-black/50 border border-dashed border-gray-600 p-6 flex flex-col items-center justify-center group-hover:border-neon-cyan group-hover:bg-neon-cyan/5 transition-all">
-                                            <FaFileUpload className="text-3xl text-gray-400 mb-2 group-hover:text-neon-cyan transition-colors" />
-                                            <span className="text-gray-400 text-sm group-hover:text-white pb-1 font-mono uppercase text-xs tracking-wider">
-                                                {formData.paymentScreenshot ? formData.paymentScreenshot.name : "Upload Proof of Transfer"}
-                                            </span>
-                                        </div>
+                                    <div className="relative group">
                                         <input
-                                            type="file"
-                                            name="paymentScreenshot"
-                                            onChange={handleFileChange}
-                                            accept="image/*"
-                                            className="hidden"
+                                            type="text"
+                                            id="transactionId"
+                                            name="transactionId"
+                                            placeholder="Enter UPI Transaction ID"
+                                            value={formData.transactionId}
+                                            onChange={handleTransactionChange}
+                                            required
+                                            className={`${inputClasses} bg-black/60 text-center font-mono tracking-widest text-lg`}
                                         />
-                                    </label>
+                                        <label htmlFor="transactionId" className={`${labelClasses} text-center w-full left-0`}>UPI Transaction ID Verification</label>
+                                    </div>
 
                                     <button
                                         onClick={handleFinalSubmit}

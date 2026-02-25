@@ -13,7 +13,7 @@ const Events = () => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/events');
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/events`);
                 const eventList = Object.entries(res.data).map(([code, details]) => ({
                     code,
                     ...details

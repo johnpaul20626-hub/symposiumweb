@@ -164,15 +164,16 @@ router.get('/stats', async (req, res) => {
 });
 
 // Register for an event
-router.post('/register', upload.single('paymentScreenshot'), async (req, res) => {
-    // console.log("Body:", req.body);
-    // console.log("File:", req.file);
-
+router.post('/register', async (req, res) => {
     try {
         let {
             name, department, college, year, email, phoneNumber,
-            eventCode, teamName, teamMembers, amountPaid
+            eventCode, teamName, teamMembers, amountPaid, transactionId
         } = req.body;
+
+        if (!transactionId) {
+            return res.status(400).json({ message: 'Transaction ID is required for verification.' });
+        }
 
         if (!EVENTS[eventCode]) {
             return res.status(400).json({ message: 'Invalid Event Code' });
@@ -227,9 +228,8 @@ router.post('/register', upload.single('paymentScreenshot'), async (req, res) =>
             teamName,
             teamMembers: teamMembers ? JSON.parse(teamMembers) : [],
             paymentStatus: 'pending',
-            transactionId: `TXN_${Date.now()}`,
-            amountPaid,
-            paymentScreenshot: req.file ? `/uploads/${req.file.filename}` : null
+            transactionId: transactionId,
+            amountPaid
         });
 
         // 3. Save to Specific Event Collection

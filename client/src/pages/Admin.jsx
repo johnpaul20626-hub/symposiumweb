@@ -13,7 +13,7 @@ const Admin = () => {
         const fetchData = async () => {
             try {
                 // In a real app, this would be protected by admin middleware
-                const res = await axios.get('http://localhost:5001/api/events/admin/all-registrations');
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/events/admin/all-registrations`);
                 setRegistrations(res.data);
             } catch (error) {
                 console.error("Error fetching admin data", error);

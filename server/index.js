@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
 app.use('/api/events', require('./routes/events'));
 app.use('/api/payment', require('./routes/payment'));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Crucial: Bind to 0.0.0.0 so Railway's proxy can route traffic correctly
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
