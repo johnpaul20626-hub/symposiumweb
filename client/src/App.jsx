@@ -6,29 +6,10 @@ import EventDetail from './pages/EventDetail';
 import EventRegistration from './pages/EventRegistration';
 import Payment from './pages/Payment';
 import Admin from './pages/Admin';
-import Intro from './components/Intro';
-import { AnimatePresence } from 'framer-motion';
 
 function App() {
-    const [showIntro, setShowIntro] = useState(false);
-
-    useEffect(() => {
-        const introPlayed = sessionStorage.getItem('introPlayed');
-        if (!introPlayed) {
-            setShowIntro(true);
-        }
-    }, []);
-
-    const handleIntroComplete = () => {
-        sessionStorage.setItem('introPlayed', 'true');
-        setShowIntro(false);
-    };
-
     return (
         <div className="min-h-screen bg-dark-bg text-white selection:bg-neon-green selection:text-black font-sans">
-            <AnimatePresence>
-                {showIntro && <Intro onComplete={handleIntroComplete} />}
-            </AnimatePresence>
 
             <Router>
                 <Routes>

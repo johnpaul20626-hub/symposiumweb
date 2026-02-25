@@ -1,3 +1,5 @@
+console.log("App starting...");
+
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -13,6 +15,11 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads')); // Serve uploaded screenshots
 app.use('/assets', express.static('assets'));   // Serve event images
+
+// Minimum test route for Railway
+app.get("/", (req, res) => {
+    res.send("Backend is LIVE 🚀");
+});
 
 // Routes
 app.use('/api/events', require('./routes/events'));

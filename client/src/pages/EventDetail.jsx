@@ -24,7 +24,7 @@ const EventDetail = () => {
         const fetchEvent = async () => {
             try {
                 // Fetch basic info from backend
-                const res = await axios.get('/server/symposium_api/api/events');
+                const res = await axios.get('http://localhost:5001/api/events');
                 const basicInfo = res.data[id];
 
                 if (basicInfo) {
@@ -80,7 +80,7 @@ const EventDetail = () => {
                             >
                                 <FaMapMarkerAlt className="text-neon-cyan text-xl mb-2 group-hover:scale-110 transition-transform" />
                                 <div className="text-gray-500 text-xs uppercase group-hover:text-neon-cyan transition-colors">Location</div>
-                                <div className="text-lg font-bold truncate">REC Campus</div>
+                                <div className="text-lg font-bold truncate">AI DS dept</div>
                             </a>
                             <div className="bg-gray-900 border border-white/10 p-4 rounded-xl">
                                 <FaTrophy className="text-gaming-accent text-xl mb-2" />

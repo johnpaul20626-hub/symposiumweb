@@ -13,7 +13,7 @@ const Home = () => {
         const fetchStats = async () => {
             try {
                 // Fetch dynamic stats from backend
-                const res = await fetch('http://localhost:5000/api/events/stats');
+                const res = await fetch('http://localhost:5001/api/events/stats');
                 if (res.ok) {
                     const data = await res.json();
                     setStats({
@@ -54,33 +54,18 @@ const Home = () => {
                 {/* Performance Optimized Overlay (No Backdrop Blur) */}
                 <div className="absolute inset-0 bg-[#02040a]/75 z-10"></div>
 
-                {/* Optimized Highly Fluid Liquid UI Blobs - Removing mix-blend-mode for huge FPS boost */}
-                <motion.div
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        borderRadius: ["40% 60% 70% 30%", "60% 40% 30% 70%", "40% 60% 70% 30%"],
-                        rotate: [0, 180, 360],
-                    }}
-                    transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                    className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-neon-cyan/20 blur-[80px] opacity-60 will-change-transform z-20"
+                {/* EXTREMELY Optimized Static Background UI Blobs - 100% Mobile Safe (No Blur/No Animation) */}
+                <div
+                    className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full z-20 pointer-events-none"
+                    style={{ background: 'radial-gradient(circle, rgba(0,243,255,0.15) 0%, rgba(0,243,255,0) 70%)' }}
                 />
-                <motion.div
-                    animate={{
-                        scale: [1, 1.3, 1],
-                        borderRadius: ["70% 30% 30% 70%", "30% 70% 70% 30%", "70% 30% 30% 70%"],
-                        rotate: [360, 180, 0],
-                    }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                    className="absolute bottom-[-10%] right-[-10%] w-[70vw] h-[70vw] bg-neon-purple/20 blur-[90px] opacity-70 will-change-transform z-20"
+                <div
+                    className="absolute bottom-[-10%] right-[-10%] w-[70vw] h-[70vw] rounded-full z-20 pointer-events-none"
+                    style={{ background: 'radial-gradient(circle, rgba(188,19,254,0.15) 0%, rgba(188,19,254,0) 70%)' }}
                 />
-                <motion.div
-                    animate={{
-                        scale: [1.1, 1.4, 1.1],
-                        borderRadius: ["40% 60% 60% 40%", "70% 30% 40% 60%", "40% 60% 60% 40%"],
-                        rotate: [0, -180, -360],
-                    }}
-                    transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-                    className="absolute top-[20%] left-[30%] w-[50vw] h-[50vw] bg-blue-500/20 blur-[80px] opacity-50 will-change-transform z-20"
+                <div
+                    className="absolute top-[20%] left-[30%] w-[50vw] h-[50vw] rounded-full z-20 pointer-events-none"
+                    style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(59,130,246,0) 70%)' }}
                 />
 
                 {/* Dark Vignette Overlay for Depth */}
@@ -244,8 +229,8 @@ const Home = () => {
 
                 <div className="flex flex-wrap justify-center gap-12 text-center items-center">
                     <CoordinatorCard
-                        name="RAMANAN"
-                        phone="+91 93457 46641"
+                        name="SEBASTIEN JEBAZ"
+                        phone="+91 90872 57509"
                         theme="cyan"
                     />
                     <CoordinatorCard

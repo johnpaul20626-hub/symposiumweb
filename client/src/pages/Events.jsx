@@ -13,7 +13,7 @@ const Events = () => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const res = await axios.get('/server/symposium_api/api/events');
+                const res = await axios.get('http://localhost:5001/api/events');
                 const eventList = Object.entries(res.data).map(([code, details]) => ({
                     code,
                     ...details
@@ -35,16 +35,23 @@ const Events = () => {
             <Navbar />
 
             {/* Background elements */}
+            {/* Background elements - Optimized for mobile performance without massive blurs */}
             <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-neon-cyan/5 blur-[100px] rounded-full"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-neon-purple/5 blur-[100px] rounded-full"></div>
+                <div
+                    className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full z-0"
+                    style={{ background: 'radial-gradient(circle, rgba(0,243,255,0.05) 0%, rgba(0,243,255,0) 70%)' }}
+                />
+                <div
+                    className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full z-0"
+                    style={{ background: 'radial-gradient(circle, rgba(188,19,254,0.05) 0%, rgba(188,19,254,0) 70%)' }}
+                />
             </div>
 
             <div className="pt-32 pb-20 container mx-auto px-4 relative z-10">
                 <div className="text-center mb-16">
                     <motion.h1
-                        initial={{ opacity: 0, y: -50, scale: 0.9, filter: "blur(10px)" }}
-                        animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                        initial={{ opacity: 0, y: -50, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ type: "spring", stiffness: 200, damping: 20 }}
                         className="text-5xl md:text-7xl font-black font-gaming mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-neon-cyan to-neon-purple drop-shadow-[0_0_20px_rgba(0,243,255,0.6)]"
                     >
@@ -99,9 +106,9 @@ const Events = () => {
                                 <motion.div
                                     key={event.code}
                                     layout
-                                    initial={{ opacity: 0, scale: 0.8, filter: "blur(15px)", y: 50 }}
-                                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.8, filter: "blur(15px)", y: 50 }}
+                                    initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.8, y: 50 }}
                                     transition={{
                                         type: "spring",
                                         stiffness: 250,
@@ -151,7 +158,7 @@ const Events = () => {
                                         </h3>
                                         <div className="h-0.5 w-12 bg-neon-purple mb-4 group-hover:w-full transition-all duration-500"></div>
 
-                                        <div className="flex justify-between items-center mb-6 text-sm text-gray-300 font-mono">
+                                        <div className="flex justify-between items-center mb-4 text-sm text-gray-300 font-mono">
                                             <span>LOCATION</span>
                                             <a
                                                 href="https://maps.app.goo.gl/YRpo99N7d8Anh75m6"
@@ -159,8 +166,29 @@ const Events = () => {
                                                 rel="noopener noreferrer"
                                                 className="text-neon-cyan font-bold text-md hover:underline decoration-neon-cyan underline-offset-4"
                                             >
-                                                REC Campus
+                                                AI DS dept
                                             </a>
+                                        </div>
+
+                                        <div className="flex justify-between items-center mb-4 text-sm text-gray-300 font-mono">
+                                            <span>REGISTRATION FEE</span>
+                                            <span className="text-neon-green font-bold text-lg">₹{event.fee || 100}</span>
+                                        </div>
+
+                                        <div className="mb-6">
+                                            <span className="text-sm text-gray-400 font-mono block mb-2">COORDINATORS</span>
+                                            {event.coordinators && event.coordinators.length > 0 ? (
+                                                <div className="flex flex-col gap-1">
+                                                    {event.coordinators.map((coord, i) => (
+                                                        <div key={i} className="text-sm font-bold text-white flex justify-between">
+                                                            <span>{coord.name}</span>
+                                                            <span className="text-gray-400">{coord.phone || 'N/A'}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <span className="text-sm text-gray-500 italic">To be announced</span>
+                                            )}
                                         </div>
 
                                         <Link

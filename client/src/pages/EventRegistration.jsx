@@ -34,7 +34,7 @@ const EventRegistration = () => {
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const res = await axios.get('/server/symposium_api/api/events');
+                const res = await axios.get('http://localhost:5001/api/events');
                 if (res.data[eventCode]) {
                     setEventDetails({ ...res.data[eventCode], code: eventCode });
                 } else {
@@ -91,7 +91,7 @@ const EventRegistration = () => {
             data.append('eventCode', eventCode);
             data.append('amountPaid', eventDetails.fee);
 
-            await axios.post('/server/symposium_api/api/events/register', data, {
+            await axios.post('http://localhost:5001/api/events/register', data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
