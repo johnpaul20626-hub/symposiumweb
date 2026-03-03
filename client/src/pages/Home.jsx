@@ -7,7 +7,7 @@ import { FaRocket, FaGamepad, FaCode, FaUserTie, FaPhoneAlt } from 'react-icons/
 
 const Home = () => {
     const targetRef = useRef(null);
-    const [stats, setStats] = useState({ events: '10+', participants: '500+', prizePool: '₹20K+' });
+    const [stats, setStats] = useState({ events: '10+', participants: '500+', prizePool: '₹5K+' });
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -82,54 +82,62 @@ const Home = () => {
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-                        className="relative z-10"
+                        className="relative z-10 w-full"
                     >
-                        <h2 className="text-neon-cyan text-xs sm:text-sm md:text-lg lg:text-xl font-bold tracking-[0.1em] sm:tracking-[0.2em] mb-8 uppercase drop-shadow-[0_0_10px_rgba(0,243,255,0.8)] whitespace-nowrap">
-                            Department of Artificial Intelligence and Data Science Presents
+                        <h2 className="text-neon-cyan text-[9px] sm:text-sm md:text-lg lg:text-xl font-bold tracking-[0.05em] sm:tracking-[0.2em] mb-4 sm:mb-8 uppercase drop-shadow-[0_0_10px_rgba(0,243,255,0.8)] leading-relaxed mx-auto text-center px-1">
+                            Department of Artificial Intelligence and Data Science <br />
+                            <span className="inline-block mt-2">Presents</span>
                         </h2>
 
-                        {/* Powerful Holographic Anti-Gravity Chrome Typography */}
-                        <div className="relative inline-block w-full py-12">
-                            <motion.h1
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    duration: 1.2,
-                                    ease: "easeOut",
-                                    delay: 0.2
-                                }}
-                                data-text="ARTIMUS 2.0"
-                                className="text-6xl sm:text-7xl md:text-8xl lg:text-[11rem] font-audiowide liquid-chrome relative z-10 leading-none px-4"
-                            >
-                                ARTIMUS 2.0
-                            </motion.h1>
-                            {/* High-Energy Glow Behind Text */}
+                        {/* Bold Thick Animated Liquid Title */}
+                        <div className="relative inline-block w-full py-6 sm:py-12 group">
+                            <h1 className="text-4xl sm:text-7xl md:text-8xl lg:text-[10rem] font-audiowide font-extrabold relative z-10 leading-tight px-2 drop-shadow-[0_0_20px_rgba(150,150,150,0.5)] sm:drop-shadow-[0_0_40px_rgba(200,200,200,0.8)] tracking-normal sm:tracking-widest whitespace-nowrap hover:drop-shadow-[0_0_60px_rgba(255,255,255,1)] transition-all duration-700">
+                                <motion.span
+                                    className="inline-block relative text-transparent bg-clip-text"
+                                    style={{
+                                        backgroundImage: "linear-gradient(90deg, #333333 0%, #a0a0a0 15%, #ffffff 30%, #555555 45%, #e6e6e6 60%, #888888 75%, #ffffff 90%, #333333 100%)",
+                                        backgroundSize: "200% auto"
+                                    }}
+                                    animate={{ backgroundPosition: ["0% center", "200% center"] }}
+                                    transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                                >
+                                    ARTIMUS 2.0
+                                </motion.span>
+                            </h1>
+                            {/* High-Energy Liquid Glow Behind Text */}
                             <motion.div
                                 animate={{
-                                    opacity: [0.3, 0.8, 0.3],
-                                    scale: [1, 1.05, 1],
+                                    opacity: [0.4, 0.8, 0.4],
+                                    scale: [0.95, 1.05, 0.95],
+                                    rotate: [0, 1, -1, 0]
                                 }}
-                                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[50%] bg-neon-cyan/20 blur-[60px] z-0 pointer-events-none"
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[150%] bg-zinc-400/30 blur-[50px] z-0 pointer-events-none rounded-[100%]"
                             ></motion.div>
                         </div>
 
-                        <p className="text-xs sm:text-sm md:text-lg lg:text-2xl text-gray-300 mx-auto mb-12 font-light tracking-[0.05em] sm:tracking-[0.1em] md:tracking-[0.2em] lg:tracking-[0.3em] uppercase font-gaming whitespace-nowrap w-full drop-shadow-md">
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6, duration: 1 }}
+                            className="text-[9px] sm:text-sm md:text-lg lg:text-2xl text-gray-300 mx-auto mb-10 sm:mb-16 font-light tracking-[0.05em] sm:tracking-[0.1em] md:tracking-[0.2em] lg:tracking-[0.3em] uppercase font-gaming break-words w-full text-center drop-shadow-md px-1"
+                        >
                             BUILT BY HUMANS. PERFECTED BY INTELLIGENCE.
-                        </p>
+                        </motion.p>
                     </motion.div>
 
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8, y: 50 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
-                        className="flex flex-col md:flex-row gap-6 justify-center items-center relative z-20 pointer-events-auto mt-4"
+                        transition={{ delay: 1.0, duration: 0.8, ease: "backOut" }}
+                        className="flex flex-col md:flex-row gap-6 justify-center items-center relative z-20 pointer-events-auto mt-8"
                     >
                         <Link
                             to="/events"
-                            className="px-10 py-4 bg-neon-cyan/10 border border-neon-cyan/50 text-neon-cyan font-bold rounded-none uppercase tracking-widest hover:bg-neon-cyan hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(0,243,255,0.2)] hover:shadow-[0_0_40px_rgba(0,243,255,0.6)]"
+                            className="px-12 py-5 sm:px-16 sm:py-6 text-lg sm:text-2xl font-black bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 border-2 border-neon-cyan/80 text-neon-cyan rounded-2xl uppercase tracking-[0.2em] hover:bg-neon-cyan hover:text-black hover:border-neon-cyan transition-all duration-500 shadow-[0_0_30px_rgba(0,243,255,0.4)] hover:shadow-[0_0_60px_rgba(0,243,255,0.8)] transform hover:-translate-y-2 hover:scale-105 backdrop-blur-md group relative overflow-hidden"
                         >
-                            Explore Events
+                            <span className="relative z-10">Register Events</span>
+                            <span className="absolute inset-0 w-full h-full bg-neon-cyan/20 scale-0 group-hover:scale-100 transition-transform duration-500 ease-out origin-center pointer-events-none rounded-2xl"></span>
                         </Link>
                     </motion.div>
                 </motion.div>
@@ -174,8 +182,31 @@ const Home = () => {
                 </div>
             </section>
 
+            {/* Coordinators Section */}
+            <section className="relative z-10 py-16 sm:py-24 container mx-auto px-6">
+                <div className="text-center mb-12 sm:mb-16">
+                    <h2 className="text-4xl md:text-5xl font-black font-gaming text-white mb-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                        SYMPOSIUM <span className="text-neon-cyan drop-shadow-[0_0_15px_rgba(0,243,255,0.8)]">COORDINATORS</span>
+                    </h2>
+                    <div className="w-24 h-1 bg-neon-cyan mx-auto rounded-full shadow-[0_0_10px_#00f3ff]"></div>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-12 text-center items-center mb-12">
+                    <CoordinatorCard
+                        name="SEBASTIEN JEBAZ"
+                        phone="+91 90872 57509"
+                        theme="cyan"
+                    />
+                    <CoordinatorCard
+                        name="NANDHA KUMAR"
+                        phone="+91 96059 41893"
+                        theme="purple"
+                    />
+                </div>
+            </section>
+
             {/* Payment QR Section */}
-            <section className="relative z-10 pb-20 pt-10 container mx-auto px-6 flex flex-col items-center justify-center">
+            <section className="relative z-10 pb-20 pt-10 container mx-auto px-6 flex flex-col items-center justify-center border-t border-white/5">
                 <div className="text-center mb-10">
                     <h2 className="text-3xl md:text-5xl font-black font-gaming text-white mb-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
                         OFFICIAL <span className="text-neon-cyan">PAYMENT</span>
@@ -213,31 +244,6 @@ const Home = () => {
                             <p className="text-gray-500 text-xs font-sans">Scan to pay with any UPI app</p>
                         </div>
                     </div>
-                </div>
-            </section>
-
-
-
-            {/* Coordinators Section */}
-            <section className="relative z-10 py-24 container mx-auto px-6 border-t border-white/5">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-black font-gaming text-white mb-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-                        SYMPOSIUM <span className="text-neon-cyan drop-shadow-[0_0_15px_rgba(0,243,255,0.8)]">COORDINATORS</span>
-                    </h2>
-                    <div className="w-24 h-1 bg-neon-cyan mx-auto rounded-full shadow-[0_0_10px_#00f3ff]"></div>
-                </div>
-
-                <div className="flex flex-wrap justify-center gap-12 text-center items-center">
-                    <CoordinatorCard
-                        name="SEBASTIEN JEBAZ"
-                        phone="+91 90872 57509"
-                        theme="cyan"
-                    />
-                    <CoordinatorCard
-                        name="NANDHA KUMAR"
-                        phone="+91 96059 41893"
-                        theme="purple"
-                    />
                 </div>
             </section>
 

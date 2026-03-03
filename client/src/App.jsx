@@ -18,6 +18,7 @@ function App() {
                     <Route path="/events" element={<Events />} />
                     <Route path="/events/:id" element={<EventDetail />} />
                     <Route path="/register/:eventCode" element={<EventRegistration />} />
+                    <Route path="/register/bundle" element={<EventRegistration />} />
                     <Route path="/payment" element={<Payment />} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="*" element={<Navigate to="/" replace />} />

@@ -16,14 +16,10 @@ const registrationSchema = new mongoose.Schema({
     // photoId removed as per user request
 
     // Event Details
-    eventCode: {
+    eventCodes: [{
         type: String,
-        required: true,
-        enum: [
-            'T-01', 'T-02', 'T-03', 'T-04', 'T-05', 'T-06',
-            'N-01', 'N-02', 'N-03', 'N-04', 'N-05', 'N-06', 'N-07'
-        ]
-    },
+        required: true
+    }],
     teamName: { type: String }, // Required for team events
     teamMembers: [{
         name: String,
@@ -46,9 +42,9 @@ const registrationSchema = new mongoose.Schema({
     registeredAt: { type: Date, default: Date.now }
 });
 
-// Prevent duplicate registration for the same event by the same email
-// Prevent duplicate registration for the same event by the same email OR phone number
-registrationSchema.index({ email: 1, eventCode: 1 }, { unique: true });
-registrationSchema.index({ phoneNumber: 1, eventCode: 1 }, { unique: true });
+// Prevent duplicate registration for the entire symposium 
+// A single person (email or phone) can only register one bundle pass.
+registrationSchema.index({ email: 1 }, { unique: true });
+registrationSchema.index({ phoneNumber: 1 }, { unique: true });
 
 module.exports = mongoose.model('Registration', registrationSchema);

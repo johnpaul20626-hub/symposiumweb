@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FaCheck, FaShoppingCart, FaTimes } from 'react-icons/fa';
 import axios from 'axios';
 
 const Events = () => {
     const [events, setEvents] = useState([]);
     const [filter, setFilter] = useState('All');
     const [loading, setLoading] = useState(true);
+    const [selectedEvents, setSelectedEvents] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -28,13 +31,30 @@ const Events = () => {
         fetchEvents();
     }, []);
 
+    const toggleEvent = (event) => {
+        if (selectedEvents.some(e => e.code === event.code)) {
+            setSelectedEvents(selectedEvents.filter(e => e.code !== event.code));
+        } else {
+            if (selectedEvents.length >= 12) {
+                alert("Maximum 12 events can be selected per pass.");
+                return;
+            }
+            setSelectedEvents([...selectedEvents, event]);
+        }
+    };
+
+    const proceedToRegistration = () => {
+        if (selectedEvents.length === 0) return;
+        // Navigate passing selected events via state
+        navigate('/register/bundle', { state: { selectedEvents } });
+    };
+
     const filteredEvents = filter === 'All' ? events : events.filter(e => e.type === filter);
 
     return (
         <div className="min-h-screen bg-deep-blue text-white relative overflow-hidden">
             <Navbar />
 
-            {/* Background elements */}
             {/* Background elements - Optimized for mobile performance without massive blurs */}
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <div
@@ -92,6 +112,69 @@ const Events = () => {
                     </motion.div>
                 </div>
 
+                {/* Sticky Liquid Registration Cart (iOS 26 Style) */}
+                <AnimatePresence>
+                    {selectedEvents.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -50, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -50, scale: 0.95 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            className="sticky top-24 z-50 mb-12 mx-auto max-w-4xl w-full"
+                        >
+                            <div className="relative p-[1px] rounded-[32px] bg-gradient-to-r from-neon-cyan via-purple-500 to-neon-cyan bg-[length:200%_auto] animate-gradient shadow-[0_15px_50px_rgba(0,243,255,0.3)] group overflow-hidden">
+                                {/* Liquid background shimmer behind cart */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-cyan opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-500"></div>
+
+                                <div className="relative bg-black/70 backdrop-blur-2xl px-6 py-5 md:px-8 md:py-6 rounded-[31px] flex flex-col md:flex-row items-center justify-between gap-6 z-10">
+                                    <div className="flex-1 w-full">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <FaShoppingCart className="text-neon-cyan text-2xl" />
+                                            <h2 className="text-white font-bold font-gaming tracking-wider text-xl">MISSION CART</h2>
+                                            <span className="bg-neon-cyan/20 text-neon-cyan px-3 py-1 rounded-md text-sm sm:text-base font-bold font-mono shadow-[0_0_10px_rgba(0,243,255,0.3)] border border-neon-cyan/30">
+                                                {selectedEvents.length}/12 SELECTED
+                                            </span>
+                                        </div>
+                                        <div className="flex flex-wrap gap-3 max-h-[120px] overflow-y-auto no-scrollbar pr-2 py-1">
+                                            <AnimatePresence>
+                                                {selectedEvents.map(ev => (
+                                                    <motion.div
+                                                        key={ev.code}
+                                                        initial={{ opacity: 0, scale: 0 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        exit={{ opacity: 0, scale: 0 }}
+                                                        className="bg-neon-purple/20 border border-neon-purple/60 px-4 py-2 rounded-full flex items-center gap-2 text-sm sm:text-base font-bold text-white shadow-[0_0_15px_rgba(188,19,254,0.4)]"
+                                                    >
+                                                        {ev.name}
+                                                        <button onClick={() => toggleEvent(ev)} className="hover:text-red-400 select-none ml-1 transition-colors"><FaTimes size={16} /></button>
+                                                    </motion.div>
+                                                ))}
+                                            </AnimatePresence>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-row items-center gap-6 w-full md:w-auto border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
+                                        <div className="flex flex-col">
+                                            <span className="text-gray-400 text-xs font-mono uppercase">Flat Pass Fee</span>
+                                            <span className="text-neon-cyan font-black text-3xl">₹200</span>
+                                        </div>
+
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={proceedToRegistration}
+                                            className="bg-neon-cyan text-black px-8 py-3 rounded-2xl font-black uppercase tracking-widest shadow-[0_0_20px_rgba(0,243,255,0.4)] hover:shadow-[0_0_40px_rgba(0,243,255,0.6)] flex items-center gap-2 flex-1 md:flex-none justify-center whitespace-nowrap overflow-hidden relative group/btn"
+                                        >
+                                            <span className="relative z-10">PROCEED</span>
+                                            <div className="absolute inset-0 bg-white/20 translate-y-[100%] group-hover/btn:translate-y-[0%] transition-transform duration-300"></div>
+                                        </motion.button>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 {loading ? (
                     <div className="flex justify-center items-center h-64">
                         <div className="w-16 h-16 border-4 border-neon-cyan border-t-transparent rounded-full animate-spin"></div>
@@ -102,105 +185,117 @@ const Events = () => {
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                     >
                         <AnimatePresence mode="popLayout">
-                            {filteredEvents.map((event, index) => (
-                                <motion.div
-                                    key={event.code}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.8, y: 50 }}
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 250,
-                                        damping: 25,
-                                        delay: index * 0.05
-                                    }}
-                                    whileHover={{ scale: 1.02, y: -10, transition: { type: "spring", stiffness: 400, damping: 10 } }}
-                                    className="group relative bg-midnight/40 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden hover:border-neon-cyan transition-all duration-500 shadow-xl hover:shadow-[0_0_40px_rgba(0,243,255,0.3)]"
-                                >
-                                    {/* Liquid Glowing Background on Hover */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 via-transparent to-neon-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl z-0 pointer-events-none"></div>
+                            {filteredEvents.map((event, index) => {
+                                const isSelected = selectedEvents.some(e => e.code === event.code);
 
-                                    {/* Animated Gaming Symbols */}
+                                return (
                                     <motion.div
-                                        animate={{ rotate: 360, scale: [1, 1.1, 1] }}
-                                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                                        className="absolute -top-16 -right-16 w-40 h-40 border-[1px] border-neon-cyan/20 rounded-full z-0 opacity-40 group-hover:border-neon-cyan/60 group-hover:opacity-100 transition-all duration-700 pointer-events-none"
-                                    />
-                                    <motion.div
-                                        animate={{ rotate: -360, scale: [1, 1.2, 1] }}
-                                        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                                        className="absolute -bottom-16 -left-16 w-48 h-48 border-[1px] border-neon-purple/20 rounded-lg z-0 opacity-40 group-hover:border-neon-purple/60 group-hover:opacity-100 transition-all duration-700 pointer-events-none"
-                                    />
+                                        key={event.code}
+                                        layout
+                                        initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.8, y: 50 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 250,
+                                            damping: 25,
+                                            delay: index * 0.05
+                                        }}
+                                        whileHover={{ scale: 1.02, y: -10, transition: { type: "spring", stiffness: 400, damping: 10 } }}
+                                        className={`group relative backdrop-blur-2xl border-2 rounded-2xl overflow-hidden transition-all duration-500 shadow-xl ${isSelected
+                                            ? 'bg-neon-cyan/5 border-neon-cyan shadow-[0_0_30px_rgba(0,243,255,0.2)]'
+                                            : 'bg-midnight/40 border-white/10 hover:border-neon-cyan/50 hover:shadow-[0_0_40px_rgba(0,243,255,0.2)]'
+                                            }`}
+                                    >
+                                        {/* Liquid Glowing Background on Hover */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 via-transparent to-neon-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl z-0 pointer-events-none"></div>
 
-                                    <div className="h-48 relative overflow-hidden z-10">
-                                        {/* Image */}
-                                        {event.image ? (
-                                            <img
-                                                src={event.image}
-                                                alt={event.name}
-                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-                                                onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
-                                            />
-                                        ) : null}
+                                        {/* Animated Gaming Symbols */}
+                                        <motion.div
+                                            animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+                                            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                            className={`absolute -top-16 -right-16 w-40 h-40 border-[1px] rounded-full z-0 opacity-40 transition-all duration-700 pointer-events-none ${isSelected ? 'border-neon-cyan/60' : 'border-neon-cyan/20 group-hover:border-neon-cyan/60 group-hover:opacity-100'}`}
+                                        />
+                                        <motion.div
+                                            animate={{ rotate: -360, scale: [1, 1.2, 1] }}
+                                            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                                            className={`absolute -bottom-16 -left-16 w-48 h-48 border-[1px] rounded-lg z-0 opacity-40 transition-all duration-700 pointer-events-none ${isSelected ? 'border-neon-purple/60' : 'border-neon-purple/20 group-hover:border-neon-purple/60 group-hover:opacity-100'}`}
+                                        />
 
-                                        {/* Fallback & Overlay */}
-                                        <div className={`absolute inset-0 bg-gradient-to-t from-midnight via-midnight/50 to-transparent ${event.image ? '' : 'flex'} flex-col justify-end p-6`}>
-                                            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur border border-neon-cyan/30 px-3 py-1 text-xs font-bold uppercase tracking-widest text-neon-cyan shadow-[0_0_10px_rgba(0,243,255,0.2)]">
-                                                {event.type}
+                                        <div className="h-48 relative overflow-hidden z-10">
+                                            {/* Image */}
+                                            {event.image && (
+                                                <img
+                                                    src={event.image}
+                                                    alt={event.name}
+                                                    className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${isSelected ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`}
+                                                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
+                                                />
+                                            )}
+
+                                            {/* Fallback & Overlay */}
+                                            <div className={`absolute inset-0 bg-gradient-to-t from-[#05070f] via-[#05070f]/50 to-transparent ${event.image ? '' : 'flex'} flex-col justify-end p-6`}>
+                                                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur border border-neon-cyan/30 px-3 py-1 text-xs font-bold uppercase tracking-widest text-neon-cyan shadow-[0_0_10px_rgba(0,243,255,0.2)]">
+                                                    {event.type}
+                                                </div>
+                                                {isSelected && (
+                                                    <div className="absolute top-4 left-4 bg-neon-cyan text-black px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1 shadow-[0_0_15px_rgba(0,243,255,0.6)]">
+                                                        <FaCheck /> ADDED
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="p-6 relative z-10">
-                                        <h3 className="text-2xl font-black font-gaming text-white mb-2 group-hover:text-neon-cyan transition-colors truncate">
-                                            {event.name}
-                                        </h3>
-                                        <div className="h-0.5 w-12 bg-neon-purple mb-4 group-hover:w-full transition-all duration-500"></div>
+                                        <div className="p-6 relative z-10 bg-[#05070f]/80 backdrop-blur-sm h-full rounded-b-2xl">
+                                            <h3 className={`text-2xl font-black font-gaming mb-2 transition-colors truncate ${isSelected ? 'text-neon-cyan' : 'text-white group-hover:text-neon-cyan'}`}>
+                                                {event.name}
+                                            </h3>
+                                            <div className={`h-0.5 bg-neon-purple mb-4 transition-all duration-500 ${isSelected ? 'w-full' : 'w-12 group-hover:w-full'}`}></div>
 
-                                        <div className="flex justify-between items-center mb-4 text-sm text-gray-300 font-mono">
-                                            <span>LOCATION</span>
-                                            <a
-                                                href="https://maps.app.goo.gl/YRpo99N7d8Anh75m6"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-neon-cyan font-bold text-md hover:underline decoration-neon-cyan underline-offset-4"
+                                            <div className="flex justify-between items-center mb-4 text-sm text-gray-300 font-mono">
+                                                <span>LOCATION</span>
+                                                <a
+                                                    href="https://maps.app.goo.gl/YRpo99N7d8Anh75m6"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-neon-cyan font-bold text-md hover:underline decoration-neon-cyan underline-offset-4"
+                                                >
+                                                    AI DS dept
+                                                </a>
+                                            </div>
+
+                                            <div className="mb-6">
+                                                <span className="text-sm text-gray-400 font-mono block mb-2">COORDINATORS</span>
+                                                {event.coordinators && event.coordinators.length > 0 ? (
+                                                    <div className="flex flex-col gap-1">
+                                                        {event.coordinators.map((coord, i) => (
+                                                            <div key={i} className="text-sm font-bold text-white flex justify-between">
+                                                                <span>{coord.name}</span>
+                                                                <span className="text-gray-400">{coord.phone || 'N/A'}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-sm text-gray-500 italic">To be announced</span>
+                                                )}
+                                            </div>
+
+                                            <button
+                                                onClick={() => toggleEvent(event)}
+                                                className={`block w-full py-3 font-bold text-center rounded-xl transition-all duration-300 uppercase tracking-widest relative overflow-hidden group/btn shadow-[0_0_15px_rgba(0,0,0,0.5)] ${isSelected
+                                                    ? 'bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500 hover:text-white'
+                                                    : 'bg-neon-cyan/10 border border-neon-cyan/50 text-neon-cyan hover:bg-neon-cyan hover:text-black hover:shadow-[0_0_25px_rgba(0,243,255,0.5)]'
+                                                    }`}
                                             >
-                                                AI DS dept
-                                            </a>
+                                                <span className="relative z-10 transition-colors duration-300 flex items-center justify-center gap-2">
+                                                    {isSelected ? <><FaTimes /> REMOVE EVENT</> : <><FaShoppingCart /> ADD EVENT</>}
+                                                </span>
+                                                {!isSelected && <div className="absolute inset-0 bg-neon-cyan translate-y-[100%] group-hover/btn:translate-y-[0%] transition-transform duration-300 ease-out z-0"></div>}
+                                            </button>
                                         </div>
-
-                                        <div className="flex justify-between items-center mb-4 text-sm text-gray-300 font-mono">
-                                            <span>REGISTRATION FEE</span>
-                                            <span className="text-neon-green font-bold text-lg">₹{event.fee || 100}</span>
-                                        </div>
-
-                                        <div className="mb-6">
-                                            <span className="text-sm text-gray-400 font-mono block mb-2">COORDINATORS</span>
-                                            {event.coordinators && event.coordinators.length > 0 ? (
-                                                <div className="flex flex-col gap-1">
-                                                    {event.coordinators.map((coord, i) => (
-                                                        <div key={i} className="text-sm font-bold text-white flex justify-between">
-                                                            <span>{coord.name}</span>
-                                                            <span className="text-gray-400">{coord.phone || 'N/A'}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <span className="text-sm text-gray-500 italic">To be announced</span>
-                                            )}
-                                        </div>
-
-                                        <Link
-                                            to={`/register/${event.code}`}
-                                            className="block w-full py-3 bg-neon-cyan/10 border border-neon-cyan/50 hover:bg-neon-cyan text-neon-cyan hover:text-black font-bold text-center rounded-lg transition-all duration-500 uppercase tracking-widest relative overflow-hidden group/btn shadow-[0_0_15px_rgba(0,243,255,0.1)] hover:shadow-[0_0_25px_rgba(0,243,255,0.5)]"
-                                        >
-                                            <span className="relative z-10 transition-colors duration-300 group-hover/btn:text-black">INITIALIZE REGISTRATION</span>
-                                            <div className="absolute inset-0 bg-neon-cyan scale-y-0 origin-bottom group-hover/btn:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0"></div>
-                                        </Link>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                    </motion.div>
+                                )
+                            })}
                         </AnimatePresence>
                     </motion.div>
                 )}

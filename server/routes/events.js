@@ -50,7 +50,7 @@ const EVENTS = {
             { name: 'John Paul', phone: '63854 23996' },
             { name: 'Salini', phone: '96005 31583' }
         ],
-        image: '/assets/technical_event.jpg'
+        image: '/assets/paper_presentation.jpg'
     },
     'T-04': {
         name: '3D-Show',
@@ -60,7 +60,7 @@ const EVENTS = {
             { name: 'Kuralarasu', phone: '97515 92260' },
             { name: 'Sai Eswaran', phone: '' }
         ],
-        image: '/assets/technical_event.jpg'
+        image: '/assets/ai_hunt.jpg'
     },
     'T-05': {
         name: 'Quiz',
@@ -70,7 +70,7 @@ const EVENTS = {
             { name: 'Yalini', phone: '90802 68792' },
             { name: 'Epsiba', phone: '63855 51062' }
         ],
-        image: '/assets/technical_event.jpg'
+        image: '/assets/paper_presentation.jpg'
     },
 
     // Non-Technical Events
@@ -82,7 +82,7 @@ const EVENTS = {
             { name: 'Sanjay', phone: '' },
             { name: 'Thanislass James', phone: '' }
         ],
-        image: '/assets/esports_event.jpg'
+        image: '/assets/ai_hunt.jpg'
     },
     'N-02': {
         name: 'E-Sports (Free-Fire)',
@@ -92,7 +92,7 @@ const EVENTS = {
             { name: 'Vibin Joseph', phone: '97862 54790' },
             { name: 'Sri Subahesan', phone: '' }
         ],
-        image: '/assets/esports_event.jpg'
+        image: '/assets/paper_presentation.jpg'
     },
     'N-03': {
         name: 'Carrom',
@@ -102,7 +102,7 @@ const EVENTS = {
             { name: 'Mithun', phone: '73391 10775' },
             { name: 'Joel', phone: '93451 34454' }
         ],
-        image: '/assets/non_technical_event.jpg'
+        image: '/assets/ai_hunt.jpg'
     },
     'N-04': {
         name: 'Start Music',
@@ -112,7 +112,7 @@ const EVENTS = {
             { name: 'Sharon', phone: '93429 26132' },
             { name: 'Saravanan', phone: '80725 63525' }
         ],
-        image: '/assets/non_technical_event.jpg'
+        image: '/assets/paper_presentation.jpg'
     },
     'N-05': {
         name: 'Chess',
@@ -122,7 +122,7 @@ const EVENTS = {
             { name: 'Saran Raj', phone: '95858 70355' },
             { name: 'Daniel Prince', phone: '88254 45026' }
         ],
-        image: '/assets/non_technical_event.jpg'
+        image: '/assets/ai_hunt.jpg'
     },
     'N-06': {
         name: 'Cine Quiz',
@@ -132,14 +132,14 @@ const EVENTS = {
             { name: 'Sharan R', phone: '63697 48808' },
             { name: 'Indija', phone: '94432 21554' }
         ],
-        image: '/assets/non_technical_event.jpg'
+        image: '/assets/paper_presentation.jpg'
     },
     'N-07': {
         name: '3A Football',
         fee: 100,
         type: 'Non-Technical',
         coordinators: [],
-        image: '/assets/non_technical_event.jpg'
+        image: '/assets/ai_hunt.jpg'
     }
 };
 
@@ -156,75 +156,83 @@ router.get('/stats', async (req, res) => {
         res.json({
             events: totalEvents,
             participants: totalRegistrations,
-            prizePool: '₹20K+'
+            prizePool: '₹5K+'
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// Register for an event
-router.post('/register', async (req, res) => {
+// Register for bundled events (Symposium Pass)
+router.post('/register-bundle', async (req, res) => {
     try {
         let {
             name, department, college, year, email, phoneNumber,
-            eventCode, teamName, teamMembers, amountPaid, transactionId
+            eventCodes, teamName, teamMembers, amountPaid, transactionId
         } = req.body;
 
         if (!transactionId) {
             return res.status(400).json({ message: 'Transaction ID is required for verification.' });
         }
 
-        if (!EVENTS[eventCode]) {
-            return res.status(400).json({ message: 'Invalid Event Code' });
+        if (!eventCodes || !Array.isArray(eventCodes) || eventCodes.length === 0) {
+            return res.status(400).json({ message: 'Please select at least one event.' });
         }
 
-        // Sanitize inputs to prevent case-sensitive duplicate bypasses
+        if (eventCodes.length > 12) {
+            return res.status(400).json({ message: 'Maximum 12 events can be selected.' });
+        }
+
+        // Validate all event codes
+        for (const code of eventCodes) {
+            if (!EVENTS[code]) {
+                return res.status(400).json({ message: `Invalid Event Code: ${code}` });
+            }
+        }
+
+        // Sanitize inputs
         email = email ? email.toLowerCase().trim() : '';
         phoneNumber = phoneNumber ? phoneNumber.trim().replace(/\s+/g, '') : '';
 
-        // Check if already registered (Email OR Phone)
+        // Check if already registered for the symposium (Duplicate Prevention across all events)
         const existingRegistration = await Registration.findOne({
-            $or: [
-                { email, eventCode },
-                { phoneNumber, eventCode }
-            ]
+            $or: [{ email }, { phoneNumber }]
         });
+
         if (existingRegistration) {
-            return res.status(400).json({ message: 'This email or phone number is already registered for this event' });
+            return res.status(400).json({ message: 'A Symposium Pass is already registered under this email or phone number.' });
         }
 
         // 1. Find or Create User
         let user = await User.findOne({ $or: [{ email }, { phoneNumber }] });
 
+        const mappedEvents = eventCodes.map(code => ({
+            eventCode: code,
+            eventName: EVENTS[code].name
+        }));
+
         if (user) {
-            // Update existing user details if needed, or just push event
-            // Check if user already has this event in their list
-            const alreadyRegistered = user.events.some(e => e.eventCode === eventCode);
-            if (alreadyRegistered) {
-                return res.status(400).json({ message: 'User already registered for this event' });
-            }
-            user.events.push({
-                eventCode,
-                eventName: EVENTS[eventCode].name
+            // Overwrite or append events if user exists (edge case)
+            const currentCodes = user.events.map(e => e.eventCode);
+            eventCodes.forEach(code => {
+                if (!currentCodes.includes(code)) {
+                    user.events.push({ eventCode: code, eventName: EVENTS[code].name });
+                }
             });
             await user.save();
         } else {
-            // Create new user
+            // Create new user profile
             user = await User.create({
                 name, email, phoneNumber, department, college, year,
-                events: [{
-                    eventCode,
-                    eventName: EVENTS[eventCode].name
-                }]
+                events: mappedEvents
             });
         }
 
-        // 2. Create Registration Log
+        // 2. Create Master Registration Log
         const registration = await Registration.create({
             userId: user._id,
             name, department, college, year, email, phoneNumber,
-            eventCode,
+            eventCodes, // Array
             teamName,
             teamMembers: Array.isArray(teamMembers) ? teamMembers : [],
             paymentStatus: 'pending',
@@ -232,24 +240,32 @@ router.post('/register', async (req, res) => {
             amountPaid
         });
 
-        // 3. Save to Specific Event Collection
-        const EventModel = EventModels[eventCode];
-        if (EventModel) {
-            await EventModel.create({
-                userId: user._id,
-                name, department, email, phoneNumber,
-                transactionId: registration.transactionId,
-                paymentStatus: 'pending'
-            });
-        }
+        // 3. Save to Specific Event Collections individually
+        const collectionPromises = eventCodes.map(async (code) => {
+            const EventModel = EventModels[code];
+            if (EventModel) {
+                // Ignore duplicate errors inside individual collections if they somehow exist
+                try {
+                    await EventModel.create({
+                        userId: user._id,
+                        name, department, email, phoneNumber,
+                        transactionId: registration.transactionId,
+                        paymentStatus: 'pending'
+                    });
+                } catch (e) {
+                    if (e.code !== 11000) console.error(`Failed to add user to Model ${code}`, e);
+                }
+            }
+        });
 
-        res.status(201).json({ message: 'Registration Successful', registration });
+        await Promise.all(collectionPromises);
+
+        res.status(201).json({ message: 'Symposium Pass Secured Successfully', registration });
     } catch (error) {
-        console.error("Registration Error:", error);
+        console.error("Bundle Registration Error:", error);
 
-        // Handle MongoDB Duplicate Key Error (e.g. if the user is already registered in the DB but state was out of sync, or race conditions)
         if (error.code === 11000) {
-            return res.status(400).json({ message: 'You are already registered for this event.' });
+            return res.status(400).json({ message: 'A Symposium Pass is already registered under this email or phone number.' });
         }
 
         res.status(500).json({ message: 'Registration Failed: ' + error.message });

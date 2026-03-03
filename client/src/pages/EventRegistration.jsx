@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
-import { useNavigate, useParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { FaUser, FaBuilding, FaPhone, FaEnvelope, FaIdCard, FaGraduationCap, FaUsers, FaFileUpload, FaQrcode, FaCheckCircle, FaTimes } from 'react-icons/fa';
+import { FaUser, FaBuilding, FaPhone, FaEnvelope, FaIdCard, FaGraduationCap, FaUsers, FaQrcode, FaCheckCircle, FaTimes, FaList } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const EventRegistration = () => {
-    const { eventCode } = useParams();
     const navigate = useNavigate();
-    const [eventDetails, setEventDetails] = useState(null);
+    const location = useLocation();
+
+    // Retrieve bundled events from Cart
+    const selectedEvents = location.state?.selectedEvents || [];
+
+    // Redirect back if accessed directly without cart
+    useEffect(() => {
+        if (!selectedEvents || selectedEvents.length === 0) {
+            navigate('/events');
+        }
+    }, [selectedEvents, navigate]);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -21,34 +30,16 @@ const EventRegistration = () => {
         phoneNumber: '',
         teamName: '',
         teamMembers: [],
-        transactionId: '' // Changed from paymentScreenshot to string ID
+        transactionId: ''
     });
 
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(true);
     const [registering, setRegistering] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    // Fetch Event Details
-    useEffect(() => {
-        const fetchEvent = async () => {
-            try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/events`);
-                if (res.data[eventCode]) {
-                    setEventDetails({ ...res.data[eventCode], code: eventCode });
-                } else {
-                    setError('Invalid Event Code');
-                }
-            } catch (err) {
-                console.error("Failed to fetch event details", err);
-                setError('Failed to load event details.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchEvent();
-    }, [eventCode]);
+    // Fixed Flat Fee
+    const FLAT_FEE = 200;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -62,7 +53,7 @@ const EventRegistration = () => {
         e.preventDefault();
         setError('');
 
-        if (!formData.name || !formData.email || !formData.college || !formData.year) {
+        if (!formData.name || !formData.email || !formData.college || !formData.year || !formData.phoneNumber || !formData.department) {
             setError("Please fill all required fields before proceeding.");
             return;
         }
@@ -80,14 +71,13 @@ const EventRegistration = () => {
         setError('');
 
         try {
-            // Send standard JSON instead of FormData
             const payload = {
                 ...formData,
-                eventCode,
-                amountPaid: eventDetails.fee
+                eventCodes: selectedEvents.map(e => e.code),
+                amountPaid: FLAT_FEE
             };
 
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/events/register`, payload, {
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/events/register-bundle`, payload, {
                 headers: { 'Content-Type': 'application/json' }
             });
 
@@ -104,21 +94,17 @@ const EventRegistration = () => {
             }, 5000);
         } catch (err) {
             console.error(err);
-            setError(err.response?.data?.message || "Registration Failed");
+            setError(err.response?.data?.message || "Registration Failed. Please try again or contact support.");
             setRegistering(false);
         }
     };
 
-    // Input styles - Updated for Deep Blue Theme
-    const inputGroupClasses = "relative group";
+    // Input styles
     const inputClasses = "w-full bg-midnight/50 border border-white/10 text-white py-4 pl-12 pr-4 rounded-none skew-x-[-10deg] focus:outline-none focus:border-neon-cyan focus:bg-midnight/80 focus:shadow-[0_0_15px_rgba(0,243,255,0.2)] transition-all duration-300 placeholder-transparent peer font-mono tracking-wide";
     const labelClasses = "absolute left-12 top-4 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:-top-6 peer-focus:text-xs peer-focus:text-neon-cyan peer-valid:-top-6 peer-valid:text-xs peer-valid:text-neon-cyan pointer-events-none font-bold skew-x-[-10deg]";
     const iconClasses = "absolute left-4 top-5 text-gray-500 transition-colors peer-focus:text-neon-cyan peer-valid:text-neon-cyan z-10 text-lg skew-x-[-10deg]";
 
-    const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1 }
-    };
+    if (selectedEvents.length === 0) return null; // Prevent flicker during redirect
 
     if (success) {
         return (
@@ -131,7 +117,7 @@ const EventRegistration = () => {
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                    className="text-center z-10 bg-midnight/80 backdrop-blur-xl p-12 border border-neon-cyan/30 shadow-[0_0_50px_rgba(0,243,255,0.2)] relative"
+                    className="text-center z-10 bg-midnight/80 backdrop-blur-xl p-12 border border-neon-cyan/30 shadow-[0_0_50px_rgba(0,243,255,0.2)] relative max-w-2xl w-full"
                 >
                     <div className="absolute inset-0 border border-neon-cyan/20 pointer-events-none"></div>
                     <motion.div
@@ -145,11 +131,16 @@ const EventRegistration = () => {
                     <h1 className="text-5xl font-black font-gaming mb-6 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
                         ACCESS GRANTED
                     </h1>
-                    <p className="text-gray-300 mb-8 max-w-lg mx-auto text-lg font-bold">
+                    <p className="text-gray-300 mb-4 max-w-lg mx-auto text-lg font-bold">
                         Identity Confirmed: <span className="text-neon-cyan">{formData.name}</span>.
-                        <br />
-                        Mission Target: <span className="text-neon-purple">{eventDetails?.name}</span>.
                     </p>
+                    <div className="text-gray-300 mb-8 max-w-lg mx-auto text-sm">
+                        <span className="block mb-2 font-gaming tracking-widest text-white">MISSION TARGETS SECURED ({selectedEvents.length}):</span>
+                        <ul className="grid grid-cols-2 gap-2 text-left bg-black/40 p-4 border border-white/10 rounded-lg font-mono">
+                            {selectedEvents.map(e => <li key={e.code} className="text-neon-cyan truncate">► {e.name}</li>)}
+                        </ul>
+                    </div>
+
                     <div className="mb-6 p-4 border border-green-500/30 bg-green-500/10 rounded-lg animate-pulse">
                         <p className="text-green-400 font-bold tracking-widest text-sm">
                             REDIRECTING TO WHATSAPP COMMUNITY...
@@ -182,66 +173,60 @@ const EventRegistration = () => {
                         <div className="bg-midnight/60 backdrop-blur-md p-8 border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.3)] h-fit sticky top-24 relative overflow-hidden group">
                             <div className="absolute top-0 left-0 w-1 h-full bg-neon-cyan group-hover:h-full transition-all duration-500"></div>
 
-                            {loading ? (
-                                <div className="animate-pulse h-64 bg-white/5 rounded"></div>
-                            ) : eventDetails ? (
-                                <>
-                                    <h2 className="text-4xl font-black font-gaming text-white mb-2 leading-none uppercase">{eventDetails.name}</h2>
-                                    <div className="text-neon-cyan font-bold font-mono text-2xl mb-8 mt-4 border-b border-white/10 pb-4">Fee: ₹{eventDetails.fee}</div>
+                            <h2 className="text-3xl font-black font-gaming text-white mb-2 leading-none uppercase">MISSION MANIFEST</h2>
+                            <p className="text-gray-400 text-sm font-mono mb-6">Bundled Event Pass Validation</p>
 
-                                    <div className="space-y-6">
-                                        <div>
-                                            <h3 className="text-gray-400 uppercase tracking-widest text-xs font-bold mb-3">Event Commanders</h3>
-                                            <div className="space-y-3">
-                                                {eventDetails.coordinators?.map((c, i) => (
-                                                    <div key={i} className="flex justify-between items-center text-sm">
-                                                        <span className="text-white font-bold">{c.name}</span>
-                                                        {c.phone && (
-                                                            <a href={`tel:${c.phone} `} className="text-neon-cyan hover:text-white transition-colors flex items-center gap-2 bg-white/5 px-3 py-1 rounded-sm text-xs font-mono">
-                                                                <FaPhone /> {c.phone}
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                ))}
+                            <div className="text-neon-cyan font-bold font-mono text-3xl mb-8 mt-4 border-b border-white/10 pb-4 shadow-sm flex items-center justify-between">
+                                Flat Fee: <span className="bg-neon-cyan/10 px-4 py-1 rounded text-white border border-neon-cyan/30 drop-shadow-[0_0_10px_rgba(0,243,255,0.4)]">₹{FLAT_FEE}</span>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div>
+                                    <h3 className="text-gray-400 uppercase tracking-widest text-xs font-bold mb-3 flex items-center gap-2">
+                                        <FaList /> Confirmed Targets ({selectedEvents.length}/12)
+                                    </h3>
+                                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2 no-scrollbar">
+                                        {selectedEvents.map((ev, i) => (
+                                            <div key={i} className="flex flex-col bg-black/40 p-3 rounded-lg border border-white/5 hover:border-neon-cyan/30 transition-colors">
+                                                <span className="text-white font-bold text-sm tracking-wide truncate">{ev.name}</span>
+                                                <span className="text-neon-cyan/70 font-mono text-xs">{ev.type}</span>
                                             </div>
-                                        </div>
+                                        ))}
                                     </div>
+                                </div>
+                            </div>
 
-                                    {/* Status Indicator */}
-                                    <div className="mt-8 pt-4 border-t border-white/10 flex items-center gap-3">
-                                        <div className="w-2 h-2 bg-neon-cyan rounded-full animate-pulse shadow-[0_0_10px_#00f3ff]"></div>
-                                        <span className="text-neon-cyan text-xs font-bold uppercase tracking-widest">System Online</span>
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="text-red-500">Event not found</div>
-                            )}
+                            {/* Status Indicator */}
+                            <div className="mt-8 pt-4 border-t border-white/10 flex items-center gap-3">
+                                <div className="w-2 h-2 bg-neon-cyan rounded-full animate-pulse shadow-[0_0_10px_#00f3ff]"></div>
+                                <span className="text-neon-cyan text-xs font-bold uppercase tracking-widest">System Online</span>
+                            </div>
                         </div>
                     </div>
 
                     {/* Registration Form */}
                     <div className="lg:col-span-2">
                         <div className="bg-black/40 backdrop-blur-xl p-8 md:p-12 border border-white/5 shadow-2xl relative">
-                            <div className="absolute top-0 right-0 p-4 opacity-20 pointer-events-none">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
                                 <FaIdCard className="text-9xl text-white" />
                             </div>
 
                             <div className="flex items-center justify-between mb-10 relative z-10">
                                 <h2 className="text-3xl font-bold text-white flex items-center gap-4 font-gaming">
                                     <span className="text-neon-cyan">&gt;&gt;</span>
-                                    INITIATE REGISTRATION
+                                    INITIATE SYMPOSIUM PASS
                                 </h2>
                                 <div className="text-gray-500 text-xs font-bold uppercase tracking-wider border border-gray-700 px-3 py-1 rounded">Step 1 / 2</div>
                             </div>
 
                             {error && !showPaymentModal && (
-                                <div className="mb-8 p-4 bg-red-500/10 border-l-4 border-red-500 text-red-200 text-sm font-mono">
+                                <div className="mb-8 p-4 bg-red-500/10 border-l-4 border-red-500 text-red-200 text-sm font-mono break-words">
                                     [ERROR] {error}
                                 </div>
                             )}
 
                             <form onSubmit={handleInitialSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-                                {/* Form inputs with itemVariants */}
+                                {/* Form inputs */}
                                 <div className="md:col-span-2 relative group">
                                     <FaUser className={iconClasses} />
                                     <input type="text" id="name" name="name" placeholder="Full Name" onChange={handleChange} required className={inputClasses} />
@@ -284,17 +269,6 @@ const EventRegistration = () => {
                                     <label htmlFor="email" className={labelClasses}>Email Address</label>
                                 </div>
 
-                                {/* Optional Team Details */}
-                                <div className="md:col-span-2 mt-4 border-t border-white/10 pt-8">
-                                    <h3 className="text-lg font-bold text-gray-400 mb-6 flex items-center gap-2 font-gaming tracking-wider"><FaUsers /> SQUAD DETAILS (OPTIONAL)</h3>
-                                </div>
-
-                                <div className="md:col-span-2 relative group">
-                                    <FaUsers className={iconClasses} />
-                                    <input type="text" id="teamName" name="teamName" placeholder="Team Name" onChange={handleChange} className={inputClasses} />
-                                    <label htmlFor="teamName" className={labelClasses}>Team Name (If applicable)</label>
-                                </div>
-
                                 <div className="md:col-span-2 mt-8">
                                     <motion.button
                                         whileHover={{ scale: 1.02, x: 5 }}
@@ -303,7 +277,7 @@ const EventRegistration = () => {
                                         className="w-full bg-neon-cyan/20 border border-neon-cyan text-neon-cyan font-black py-5 px-8 shadow-[0_0_20px_rgba(0,243,255,0.1)] hover:shadow-[0_0_30px_rgba(0,243,255,0.4)] hover:bg-neon-cyan hover:text-black transition-all duration-300 uppercase tracking-[0.2em] text-xl clip-path-polygon"
                                         style={{ clipPath: "polygon(0% 0%, 100% 0%, 95% 100%, 0% 100%)" }}
                                     >
-                                        Proceed to Payment
+                                        Proceed to Payment (₹{FLAT_FEE})
                                     </motion.button>
                                 </div>
                             </form>
@@ -319,30 +293,30 @@ const EventRegistration = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="absolute inset-0 bg-black/90 backdrop-blur-md"
+                                className="absolute inset-0 bg-black/95 backdrop-blur-xl"
                                 onClick={() => setShowPaymentModal(false)}
                             />
                             <motion.div
                                 initial={{ scale: 0.9, opacity: 0, y: 50 }}
                                 animate={{ scale: 1, opacity: 1, y: 0 }}
                                 exit={{ scale: 0.9, opacity: 0, y: 50 }}
-                                className="relative bg-midnight border border-neon-cyan/50 p-10 max-w-md w-full shadow-[0_0_100px_rgba(0,243,255,0.15)] z-60"
+                                className="relative bg-[#05070f] border border-neon-cyan/30 p-10 max-w-md w-full shadow-[0_0_100px_rgba(0,243,255,0.15)] z-60 rounded-2xl overflow-hidden"
                             >
+                                <div className="absolute top-[-50px] right-[-50px] w-40 h-40 bg-neon-purple/20 blur-[50px] rounded-full pointer-events-none z-0"></div>
+                                <div className="absolute bottom-[-50px] left-[-50px] w-40 h-40 bg-neon-cyan/20 blur-[50px] rounded-full pointer-events-none z-0"></div>
+
                                 <button
                                     onClick={() => setShowPaymentModal(false)}
-                                    className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
+                                    className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-20"
                                 >
                                     <FaTimes className="text-xl" />
                                 </button>
 
-                                <h2 className="text-3xl font-black font-gaming text-white text-center mb-2">AUTHORIZE PAYMENT</h2>
-                                <p className="text-neon-cyan text-center mb-8 text-sm uppercase tracking-widest font-mono">Secure Transaction Protocol</p>
+                                <h2 className="text-3xl font-black font-gaming text-white text-center mb-2 relative z-10">AUTHORIZE PAYMENT</h2>
+                                <p className="text-neon-cyan text-center mb-8 text-sm uppercase tracking-widest font-mono relative z-10">Secure Transaction Protocol</p>
 
-                                <div className="relative group p-[2px] rounded-3xl bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-cyan bg-[length:200%_auto] animate-gradient shadow-[0_0_50px_rgba(0,243,255,0.3)] mx-auto max-w-sm w-full mb-8">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-cyan opacity-40 blur-lg group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
+                                <div className="relative group p-[2px] rounded-3xl bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-cyan bg-[length:200%_auto] animate-gradient shadow-[0_0_50px_rgba(0,243,255,0.1)] mx-auto max-w-sm w-full mb-8 z-10">
                                     <div className="relative bg-[#f6f8fb] p-6 rounded-3xl flex flex-col items-center overflow-hidden z-10 w-full">
-                                        <div className="absolute top-[-40px] right-[-40px] w-32 h-32 bg-purple-300 opacity-40 blur-[30px] rounded-full z-0 animate-blob"></div>
-                                        <div className="absolute bottom-[-40px] left-[-40px] w-32 h-32 bg-cyan-300 opacity-40 blur-[30px] rounded-full z-0 animate-blob animation-delay-2000"></div>
 
                                         <div className="flex items-center gap-3 mb-5 relative z-10 w-full">
                                             <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border border-gray-300 flex-shrink-0">
@@ -368,15 +342,18 @@ const EventRegistration = () => {
                                     </div>
                                 </div>
 
-                                <p className="text-center text-white font-bold text-2xl mb-8 font-mono">Amount: <span className="text-neon-cyan">₹{eventDetails?.fee}</span></p>
+                                <div className="text-center mb-6 relative z-10 bg-black/40 py-3 rounded-lg border border-white/5">
+                                    <p className="text-gray-400 font-mono text-xs uppercase mb-1">Total Pass Fee</p>
+                                    <p className="text-white font-bold text-3xl font-mono">₹{FLAT_FEE}</p>
+                                </div>
 
                                 {error && (
-                                    <div className="mb-4 p-2 bg-red-900/50 text-red-200 text-xs text-center border border-red-500 font-mono">
+                                    <div className="mb-4 p-3 bg-red-900/30 text-red-300 text-sm text-center border-l-4 border-red-500 font-mono relative z-10">
                                         [ERROR] {error}
                                     </div>
                                 )}
 
-                                <div className="space-y-6">
+                                <div className="space-y-6 relative z-10">
                                     <div className="relative group">
                                         <input
                                             type="text"
@@ -386,7 +363,7 @@ const EventRegistration = () => {
                                             value={formData.transactionId}
                                             onChange={handleTransactionChange}
                                             required
-                                            className={`${inputClasses} bg-black/60 text-center font-mono tracking-widest text-lg`}
+                                            className={`${inputClasses} bg-black/80 text-center font-mono tracking-widest text-lg`}
                                         />
                                         <label htmlFor="transactionId" className={`${labelClasses} text-center w-full left-0`}>UPI Transaction ID Verification</label>
                                     </div>
@@ -394,9 +371,9 @@ const EventRegistration = () => {
                                     <button
                                         onClick={handleFinalSubmit}
                                         disabled={registering}
-                                        className="w-full bg-neon-cyan text-black font-black py-4 shadow-[0_0_20px_rgba(0,243,255,0.4)] hover:shadow-[0_0_40px_rgba(0,243,255,0.6)] hover:scale-[1.02] transition-all uppercase tracking-widest flex items-center justify-center gap-2 text-lg"
+                                        className="w-full bg-gradient-to-r from-neon-cyan/80 to-neon-purple/80 text-white font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,243,255,0.4)] hover:shadow-[0_0_40px_rgba(0,243,255,0.6)] hover:scale-[1.02] transition-all uppercase tracking-widest flex items-center justify-center gap-2 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        {registering ? 'Processing...' : 'CONFIRM ACCESS'}
+                                        {registering ? 'Processing Transaction...' : 'CONFIRM PAYMENT'}
                                     </button>
                                 </div>
                             </motion.div>
