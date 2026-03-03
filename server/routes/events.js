@@ -226,7 +226,7 @@ router.post('/register', async (req, res) => {
             name, department, college, year, email, phoneNumber,
             eventCode,
             teamName,
-            teamMembers: teamMembers ? JSON.parse(teamMembers) : [],
+            teamMembers: Array.isArray(teamMembers) ? teamMembers : [],
             paymentStatus: 'pending',
             transactionId: transactionId,
             amountPaid
