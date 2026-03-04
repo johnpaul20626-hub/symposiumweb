@@ -39,7 +39,7 @@ const Home = () => {
     const y = useTransform(scrollYProgress, [0, 0.5], [0, -50]);
 
     return (
-        <div className="min-h-screen bg-deep-blue text-white overflow-hidden relative">
+        <div className="min-h-screen bg-deep-blue text-white overflow-x-hidden relative">
             <Navbar />
 
             {/* Ultra-Smooth High-Performance Static Liquid Background */}
@@ -86,7 +86,8 @@ const Home = () => {
                     >
                         <h2 className="text-neon-cyan text-[9px] sm:text-sm md:text-lg lg:text-xl font-bold tracking-[0.05em] sm:tracking-[0.2em] mb-4 sm:mb-8 uppercase drop-shadow-[0_0_10px_rgba(0,243,255,0.8)] leading-relaxed mx-auto text-center px-1">
                             Department of Artificial Intelligence and Data Science <br />
-                            <span className="inline-block mt-2">Presents</span>
+                            <span className="inline-block mt-2">Presents</span> <br />
+                            <span className="inline-block mt-3 text-white text-[11px] sm:text-lg md:text-2xl font-gaming tracking-[0.2em] drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]">NATIONAL LEVEL SYMPOSIUM</span>
                         </h2>
 
                         {/* Bold Thick Animated Liquid Title */}
@@ -156,14 +157,14 @@ const Home = () => {
             <section className="relative z-20 pt-10 pb-20 container mx-auto px-4 sm:px-6 min-h-[500px] flex items-center">
                 {/* Robot Walking From Right to Left */}
                 <motion.div
-                    initial={{ x: 500, opacity: 0 }}
+                    initial={{ x: 100, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
-                    viewport={{ once: true, amount: 0.1 }}
-                    transition={{ duration: 1.8, type: "spring", bounce: 0.1 }}
-                    className="flex flex-col md:flex-row items-center justify-center gap-10 w-full"
+                    viewport={{ once: true, amount: 0.05 }}
+                    transition={{ duration: 1.2, type: "spring", bounce: 0.1 }}
+                    className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 w-full"
                 >
                     {/* The 3D Robot (True Transparent PNG, Giant Sized, Waving) */}
-                    <div className="relative w-80 h-[500px] sm:w-[450px] sm:h-[600px] md:w-[500px] md:h-[700px] lg:w-[600px] lg:h-[800px] flex-shrink-0 z-20">
+                    <div className="relative w-64 h-[400px] sm:w-[350px] sm:h-[500px] md:w-[500px] md:h-[700px] lg:w-[600px] lg:h-[800px] flex-shrink-0 z-20">
                         {/* Waving + Hovering Animation */}
                         <motion.img
                             src="/assets/cyberpunk_ai_robot_transparent.png"
