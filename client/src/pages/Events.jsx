@@ -3,14 +3,125 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaCheck, FaShoppingCart, FaTimes } from 'react-icons/fa';
+import { FaCheck, FaShoppingCart, FaTimes, FaInfoCircle } from 'react-icons/fa';
 import axios from 'axios';
+
+const EVENT_RULES = {
+    'Chess': `**Rules:**
+• The objective of the game is to checkmate the opponent’s king.
+• The chessboard has 64 squares arranged in an 8×8 grid.
+• Each player starts with 16 pieces: 1 King, 1 Queen, 2 Rooks, 2 Bishops, 2 Knights, 8 Pawns
+• **King** – Moves one square in any direction.
+• **Queen** – Moves any number of squares in any direction.
+• **Rook** – Moves horizontally or vertically.
+• **Bishop** – Moves diagonally.
+• **Knight** – Moves in an L-shape.
+• **Pawn** – Moves forward one square (two squares on first move) and captures diagonally.
+• The player who checkmates the opponent’s king wins the match.`,
+
+    'Carrom': `**Common Rules:**
+• Disturbing the coins while playing will be considered a foul.
+• For each foul, one coin will be returned to the board.
+• Points are not considered.
+• Potting the opponent’s coin when the last coin is left will be considered a loss.
+• Matches will be conducted in knockout format.
+
+**Doubles:**
+• Thumbing is not allowed.
+
+**Singles:**
+• Thumbing is allowed if both players agree.`,
+
+    'Quiz': `**Team Formation:**
+• Participants can play individually or in teams (2–4 members).
+• Each team must choose a team name and register before the quiz begins.
+
+**Quiz Format:**
+• The quiz will contain different rounds such as General Knowledge & Technical / Subject-based Round.
+• Each round will have a fixed number of questions.
+
+**Question Rules:**
+• The quizmaster will read each question only once.
+• Teams will get 30 seconds to answer.
+• Mobile phones and internet usage are strictly prohibited.
+• No discussion with the audience.
+
+**Scoring System:**
+• Correct answer → +10 marks
+• Wrong answer → –5 marks
+• No answer → 0 marks
+• Unanswered questions may be passed to another team.
+
+**Discipline:**
+• Participants must maintain silence, no arguments. The quizmaster’s decision is final.`,
+
+    'Cine Quiz': `**Eligibility:**
+• Open to all registered participants.
+• Participants can play individually or in teams (2–3 members).
+
+**Quiz Format:**
+• 🎥 Visual Round (identify movie/actor)
+• 🎧 Audio Round (identify song/dialogue)
+• ⚡ Rapid Fire Round
+• ❓ Direct Question Round
+
+**Scoring:**
+• Correct answer → +10 points.
+• Wrong answer → –5 points (depending on the round).
+• Passed questions may be answered by other teams for bonus points.`,
+
+    'Connection': `**Rules:**
+• Participants must raise their hand to answer.
+• The team that raises their hand first gets the chance to answer.
+• Teams must identify the connection between the given clues.
+• The team scoring the maximum points wins.`,
+
+    'AI-Hunt': `**Rules:**
+• Teams must consist of 3–5 members.
+• Only one mobile phone per team is allowed for scanning QR codes.
+• Start from the first QR code at the starting point.
+• Each QR code reveals a clue to the next location.
+• Skipping checkpoints or sharing answers is strictly prohibited.
+• Any unfair practice will lead to disqualification.
+• The team that completes all checkpoints first wins.
+• If time ends, the team with the most completed checkpoints wins.
+• Participants must follow campus discipline and avoid damaging QR codes.
+• Final checkpoint verification is mandatory.`,
+
+    'E-Sports (Free-Fire)': `**Rules:**
+• Mobile-only tournament.
+• Game mode: Battle Royale.
+• No hacks or cheats allowed.
+• No glitch exploitation.
+• Tournament will be conducted in E-sports mode.
+• The last surviving player/team becomes the champion.`,
+
+    'E-Sports (PES)': `**Rules:**
+• All participants must have updated eFootball by Konami installed.
+• The organizer will create a Friend Match Room before the match.
+• The Room ID will be shared only with selected players.
+• Match duration (half length) will be decided before the game.
+• Extra time and penalties will be enabled if required.
+• Players must select teams on time.
+• Standard football rules like offside, fouls, and cards apply.
+• Players must ensure a stable internet connection.
+• Fair play must be maintained; intentional disconnection is not allowed.
+• Match results will be recorded after completion.`,
+
+    '3D-Show': `**Rules:**
+• Participants must sit in their designated seats.
+• Maintain silence during the presentation.
+• Collect 3D glasses before the show.
+• Return the glasses after the show.
+• Handle all equipment carefully.`
+};
 
 const Events = () => {
     const [events, setEvents] = useState([]);
     const [filter, setFilter] = useState('All');
     const [loading, setLoading] = useState(true);
     const [selectedEvents, setSelectedEvents] = useState([]);
+    const [activeRuleModal, setActiveRuleModal] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -264,7 +375,7 @@ const Events = () => {
                                                 </a>
                                             </div>
 
-                                            <div className="mb-6">
+                                            <div className="mb-4">
                                                 <span className="text-sm text-gray-400 font-mono block mb-2">COORDINATORS</span>
                                                 {event.coordinators && event.coordinators.length > 0 ? (
                                                     <div className="flex flex-col gap-1">
@@ -280,18 +391,30 @@ const Events = () => {
                                                 )}
                                             </div>
 
-                                            <button
-                                                onClick={() => toggleEvent(event)}
-                                                className={`block w-full py-3 font-bold text-center rounded-xl transition-all duration-300 uppercase tracking-widest relative overflow-hidden group/btn shadow-[0_0_15px_rgba(0,0,0,0.5)] ${isSelected
-                                                    ? 'bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500 hover:text-white'
-                                                    : 'bg-neon-cyan/10 border border-neon-cyan/50 text-neon-cyan hover:bg-neon-cyan hover:text-black hover:shadow-[0_0_25px_rgba(0,243,255,0.5)]'
-                                                    }`}
-                                            >
-                                                <span className="relative z-10 transition-colors duration-300 flex items-center justify-center gap-2">
-                                                    {isSelected ? <><FaTimes /> REMOVE EVENT</> : <><FaShoppingCart /> ADD EVENT</>}
-                                                </span>
-                                                {!isSelected && <div className="absolute inset-0 bg-neon-cyan translate-y-[100%] group-hover/btn:translate-y-[0%] transition-transform duration-300 ease-out z-0"></div>}
-                                            </button>
+                                            <div className="flex gap-2 mt-auto pt-2">
+                                                <button
+                                                    onClick={() => toggleEvent(event)}
+                                                    className={`flex-1 py-3 font-bold text-center rounded-xl transition-all duration-300 uppercase tracking-widest relative overflow-hidden group/btn shadow-[0_0_15px_rgba(0,0,0,0.5)] text-sm sm:text-base ${isSelected
+                                                        ? 'bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500 hover:text-white'
+                                                        : 'bg-neon-cyan/10 border border-neon-cyan/50 text-neon-cyan hover:bg-neon-cyan hover:text-black hover:shadow-[0_0_25px_rgba(0,243,255,0.5)]'
+                                                        }`}
+                                                >
+                                                    <span className="relative z-10 transition-colors duration-300 flex items-center justify-center gap-2">
+                                                        {isSelected ? <><FaTimes /> REMOVE</> : <><FaShoppingCart /> ADD EVENT</>}
+                                                    </span>
+                                                    {!isSelected && <div className="absolute inset-0 bg-neon-cyan translate-y-[100%] group-hover/btn:translate-y-[0%] transition-transform duration-300 ease-out z-0"></div>}
+                                                </button>
+
+                                                {EVENT_RULES[event.name] && (
+                                                    <button
+                                                        onClick={() => setActiveRuleModal({ name: event.name, type: event.type })}
+                                                        className="px-4 py-3 bg-white/5 border border-white/20 text-white rounded-xl hover:bg-white hover:text-black hover:border-white transition-all duration-300 flex items-center justify-center shadow-[0_0_10px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+                                                        title="Read Rules"
+                                                    >
+                                                        <FaInfoCircle className="text-xl" />
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </motion.div>
                                 )
@@ -300,6 +423,89 @@ const Events = () => {
                     </motion.div>
                 )}
             </div>
+
+            {/* Rules Modal */}
+            <AnimatePresence>
+                {activeRuleModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+                        onClick={() => setActiveRuleModal(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 50, opacity: 0 }}
+                            animate={{ scale: 1, y: 0, opacity: 1 }}
+                            exit={{ scale: 0.9, y: 50, opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className={`relative w-full max-w-2xl bg-midnight/90 border-2 rounded-3xl overflow-hidden shadow-2xl ${activeRuleModal.type === 'Technical'
+                                    ? 'border-neon-cyan/50 shadow-[0_0_50px_rgba(0,243,255,0.3)]'
+                                    : 'border-neon-purple/50 shadow-[0_0_50px_rgba(188,19,254,0.3)]'
+                                }`}
+                        >
+                            {/* Modal Header */}
+                            <div className={`p-6 md:p-8 border-b flex justify-between items-center bg-gradient-to-r ${activeRuleModal.type === 'Technical'
+                                    ? 'from-neon-cyan/20 to-transparent border-neon-cyan/30'
+                                    : 'from-neon-purple/20 to-transparent border-neon-purple/30'
+                                }`}>
+                                <div>
+                                    <h2 className="text-3xl md:text-4xl font-black font-gaming tracking-wider text-white flex items-center gap-3 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+                                        <FaInfoCircle className={activeRuleModal.type === 'Technical' ? 'text-neon-cyan' : 'text-neon-purple'} />
+                                        {activeRuleModal.name}
+                                    </h2>
+                                    <p className={`text-sm font-mono mt-2 ${activeRuleModal.type === 'Technical' ? 'text-neon-cyan/80' : 'text-neon-purple/80'}`}>
+                                        RULES & REGULATIONS
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => setActiveRuleModal(null)}
+                                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                                >
+                                    <FaTimes size={20} />
+                                </button>
+                            </div>
+
+                            {/* Modal Content - Scrollable */}
+                            <div className="p-6 md:p-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                                <div className="space-y-4 text-gray-300 font-sans leading-relaxed text-sm md:text-base">
+                                    {EVENT_RULES[activeRuleModal.name]?.split('\n').map((line, idx) => {
+                                        if (line.startsWith('**') && line.endsWith('**')) {
+                                            return <h4 key={idx} className={`text-lg font-bold mt-6 mb-2 ${activeRuleModal.type === 'Technical' ? 'text-neon-cyan' : 'text-neon-purple'}`}>{line.replace(/\*\*/g, '')}</h4>;
+                                        }
+                                        if (line.startsWith('•')) {
+                                            return (
+                                                <div key={idx} className="flex gap-3 items-start p-2 hover:bg-white/5 rounded-lg transition-colors">
+                                                    <span className={activeRuleModal.type === 'Technical' ? 'text-neon-cyan mt-1' : 'text-neon-purple mt-1'}>🎮</span>
+                                                    <span dangerouslySetInnerHTML={{ __html: line.substring(1).replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>') }} />
+                                                </div>
+                                            );
+                                        }
+                                        if (line.trim() === '') return <br key={idx} />;
+                                        return <p key={idx}>{line}</p>;
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Modal Footer */}
+                            <div className={`p-4 md:p-6 border-t flex justify-end bg-black/40 ${activeRuleModal.type === 'Technical' ? 'border-neon-cyan/30' : 'border-neon-purple/30'
+                                }`}>
+                                <button
+                                    onClick={() => setActiveRuleModal(null)}
+                                    className={`px-8 py-3 rounded-xl font-bold uppercase tracking-widest transition-all ${activeRuleModal.type === 'Technical'
+                                            ? 'bg-neon-cyan/20 text-neon-cyan hover:bg-neon-cyan hover:text-black border border-neon-cyan/50 shadow-[0_0_15px_rgba(0,243,255,0.3)]'
+                                            : 'bg-neon-purple/20 text-neon-purple hover:bg-neon-purple hover:text-white border border-neon-purple/50 shadow-[0_0_15px_rgba(188,19,254,0.3)]'
+                                        }`}
+                                >
+                                    Acknowledge
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <Footer />
         </div>
     );
