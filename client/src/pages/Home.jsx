@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { FaRocket, FaGamepad, FaCode, FaUserTie, FaPhoneAlt } from 'react-icons/fa';
+import { FaRocket, FaGamepad, FaCode, FaUserTie, FaPhoneAlt, FaRobot } from 'react-icons/fa';
 
 const Home = () => {
     const targetRef = useRef(null);
@@ -152,8 +152,107 @@ const Home = () => {
                 </motion.div>
             </header>
 
+            {/* AI Robot Welcome Message Section */}
+            <section className="relative z-20 pt-10 pb-20 container mx-auto px-4 sm:px-6 min-h-[500px] flex items-center">
+                {/* Robot Walking From Right to Left */}
+                <motion.div
+                    initial={{ x: 500, opacity: 0 }}
+                    whileInView={{ x: 0, opacity: 1 }}
+                    viewport={{ once: true, amount: 0.1 }}
+                    transition={{ duration: 1.8, type: "spring", bounce: 0.1 }}
+                    className="flex flex-col md:flex-row items-center justify-center gap-10 w-full"
+                >
+                    {/* The 3D Robot (True Transparent PNG, Giant Sized, Waving) */}
+                    <div className="relative w-80 h-[500px] sm:w-[450px] sm:h-[600px] md:w-[500px] md:h-[700px] lg:w-[600px] lg:h-[800px] flex-shrink-0 z-20">
+                        {/* Waving + Hovering Animation */}
+                        <motion.img
+                            src="/assets/cyberpunk_ai_robot_transparent.png"
+                            alt="3D Cyberpunk AI Robot"
+                            animate={{
+                                y: [0, -20, 0], // Floating
+                                rotate: [0, 15, -5, 12, 0] // Waving its hand
+                            }}
+                            transition={{
+                                y: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+                                rotate: { duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }
+                            }}
+                            className="w-full h-full object-contain drop-shadow-[0_0_40px_rgba(0,243,255,0.7)]"
+                            style={{
+                                filter: 'contrast(1.1) brightness(1.1)'
+                            }}
+                        />
+                        {/* Floor glow under robot */}
+                        <motion.div
+                            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+                            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-10 bg-neon-cyan/30 blur-[20px] rounded-full z-[-1]"
+                        ></motion.div>
+                    </div>
+
+                    {/* Staggered Rolling Text Message */}
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: {
+                                opacity: 1,
+                                transition: { staggerChildren: 0.8, delayChildren: 1.5 } // Wait for robot to walk in before speaking
+                            }
+                        }}
+                        className="flex-1 text-center md:text-left z-10 w-full max-w-2xl bg-deep-blue/40 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-neon-cyan/20 shadow-[0_0_40px_rgba(0,0,0,0.5)]"
+                    >
+                        <motion.h3
+                            variants={{
+                                hidden: { opacity: 0, x: 50 },
+                                visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 100 } }
+                            }}
+                            className="text-xl sm:text-3xl font-audiowide text-white mb-6 tracking-wide drop-shadow-[0_0_10px_rgba(0,243,255,0.8)]"
+                        >
+                            <span className="text-neon-cyan typing-cursor">Hi Player!</span>
+                            <br className="hidden sm:block mt-2" /> Welcome to ARTIMUS 2.0
+                        </motion.h3>
+
+                        <div className="space-y-4 text-sm sm:text-base lg:text-lg text-gray-200 font-mono tracking-wide">
+                            <motion.p
+                                variants={{
+                                    hidden: { opacity: 0, x: 50 },
+                                    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 100 } }
+                                }}
+                                className="leading-relaxed relative sm:pl-6"
+                            >
+                                <span className="hidden sm:inline-block absolute left-0 text-neon-purple font-bold">»</span>
+                                The ultimate tech arena awaits you.
+                            </motion.p>
+
+                            <motion.p
+                                variants={{
+                                    hidden: { opacity: 0, x: 50 },
+                                    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 100 } }
+                                }}
+                                className="leading-relaxed relative sm:pl-6"
+                            >
+                                <span className="hidden sm:inline-block absolute left-0 text-neon-purple font-bold">»</span>
+                                Choose your events, prove your skills, and climb the leaderboard.
+                            </motion.p>
+
+                            <motion.p
+                                variants={{
+                                    hidden: { opacity: 0, scale: 0.8 },
+                                    visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100 } }
+                                }}
+                                className="leading-relaxed font-bold text-white mt-8 inline-block border-2 border-neon-cyan bg-neon-cyan/10 px-6 py-3 rounded-full shadow-[0_0_15px_rgba(0,243,255,0.4)]"
+                            >
+                                Ready to start your mission? <span className="animate-pulse inline-block w-2 h-4 sm:w-3 sm:h-5 bg-current ml-2 align-middle"></span>
+                            </motion.p>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            </section>
+
             {/* About / Categories Section */}
-            <section className="relative z-10 py-32 container mx-auto px-6">
+            <section className="relative z-10 py-16 sm:py-20 container mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <FeatureCard
                         icon={<FaCode />}
@@ -199,7 +298,7 @@ const Home = () => {
                     />
                     <CoordinatorCard
                         name="NANDHA KUMAR"
-                        phone="+91 96059 41893"
+                        phone="+91 63795 39838"
                         theme="purple"
                     />
                 </div>
