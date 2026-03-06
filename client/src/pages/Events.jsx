@@ -266,8 +266,8 @@ const Events = () => {
 
                                     <div className="flex flex-row items-center gap-6 w-full md:w-auto border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
                                         <div className="flex flex-col">
-                                            <span className="text-gray-400 text-xs font-mono uppercase">Flat Pass Fee</span>
-                                            <span className="text-neon-cyan font-black text-3xl">₹200</span>
+                                            <span className="text-gray-400 text-xs font-mono uppercase">Total Pass Fee</span>
+                                            <span className="text-neon-cyan font-black text-3xl">₹{selectedEvents.length === 1 && ['N-01', 'N-02', 'N-07'].includes(selectedEvents[0].code) ? 150 : 200}</span>
                                         </div>
 
                                         <motion.button
@@ -441,14 +441,14 @@ const Events = () => {
                             transition={{ type: "spring", stiffness: 300, damping: 25 }}
                             onClick={(e) => e.stopPropagation()}
                             className={`relative w-full max-w-2xl bg-midnight/90 border-2 rounded-3xl overflow-hidden shadow-2xl ${activeRuleModal.type === 'Technical'
-                                    ? 'border-neon-cyan/50 shadow-[0_0_50px_rgba(0,243,255,0.3)]'
-                                    : 'border-neon-purple/50 shadow-[0_0_50px_rgba(188,19,254,0.3)]'
+                                ? 'border-neon-cyan/50 shadow-[0_0_50px_rgba(0,243,255,0.3)]'
+                                : 'border-neon-purple/50 shadow-[0_0_50px_rgba(188,19,254,0.3)]'
                                 }`}
                         >
                             {/* Modal Header */}
                             <div className={`p-6 md:p-8 border-b flex justify-between items-center bg-gradient-to-r ${activeRuleModal.type === 'Technical'
-                                    ? 'from-neon-cyan/20 to-transparent border-neon-cyan/30'
-                                    : 'from-neon-purple/20 to-transparent border-neon-purple/30'
+                                ? 'from-neon-cyan/20 to-transparent border-neon-cyan/30'
+                                : 'from-neon-purple/20 to-transparent border-neon-purple/30'
                                 }`}>
                                 <div>
                                     <h2 className="text-3xl md:text-4xl font-black font-gaming tracking-wider text-white flex items-center gap-3 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
@@ -494,8 +494,8 @@ const Events = () => {
                                 <button
                                     onClick={() => setActiveRuleModal(null)}
                                     className={`px-8 py-3 rounded-xl font-bold uppercase tracking-widest transition-all ${activeRuleModal.type === 'Technical'
-                                            ? 'bg-neon-cyan/20 text-neon-cyan hover:bg-neon-cyan hover:text-black border border-neon-cyan/50 shadow-[0_0_15px_rgba(0,243,255,0.3)]'
-                                            : 'bg-neon-purple/20 text-neon-purple hover:bg-neon-purple hover:text-white border border-neon-purple/50 shadow-[0_0_15px_rgba(188,19,254,0.3)]'
+                                        ? 'bg-neon-cyan/20 text-neon-cyan hover:bg-neon-cyan hover:text-black border border-neon-cyan/50 shadow-[0_0_15px_rgba(0,243,255,0.3)]'
+                                        : 'bg-neon-purple/20 text-neon-purple hover:bg-neon-purple hover:text-white border border-neon-purple/50 shadow-[0_0_15px_rgba(188,19,254,0.3)]'
                                         }`}
                                 >
                                     Acknowledge

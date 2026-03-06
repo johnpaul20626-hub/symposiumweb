@@ -21,12 +21,7 @@ const registrationSchema = new mongoose.Schema({
         required: true
     }],
     teamName: { type: String }, // Required for team events
-    teamMembers: [{
-        name: String,
-        college: String,
-        email: String,
-        phone: String
-    }],
+    teamMembers: [String],
     submissionLink: { type: String }, // For Hackathon/Paper/Project
 
     // Payment Details

@@ -42,7 +42,7 @@ const Admin = () => {
     const uniqueEvents = [...new Set(registrations.map(r => r.eventCode))];
 
     const exportToCSV = () => {
-        const headers = ["Registration ID", "Event Code", "Event Name", "User Name", "College", "Email", "Phone", "Team Name", "Amount Paid", "Txn ID"];
+        const headers = ["Registration ID", "Event Code", "Event Name", "User Name", "College", "Email", "Phone", "Team Name", "Team Members", "Amount Paid", "Txn ID"];
         const rows = filteredData.map(r => [
             r._id,
             r.eventCode,
@@ -52,6 +52,7 @@ const Admin = () => {
             r.userId?.email || 'N/A',
             r.userId?.phoneNumber || 'N/A',
             r.teamName || '-',
+            r.teamMembers && r.teamMembers.length > 0 ? r.teamMembers.join(' | ') : '-',
             r.amountPaid,
             r.transactionId
         ]);
@@ -145,7 +146,8 @@ const Admin = () => {
                                 <th className="p-4 font-bold border-b border-gray-700">Event</th>
                                 <th className="p-4 font-bold border-b border-gray-700">User</th>
                                 <th className="p-4 font-bold border-b border-gray-700">College</th>
-                                <th className="p-4 font-bold border-b border-gray-700">Team</th>
+                                <th className="p-4 font-bold border-b border-gray-700">Team Name</th>
+                                <th className="p-4 font-bold border-b border-gray-700">Team Members</th>
                                 <th className="p-4 font-bold border-b border-gray-700">Amount</th>
                                 <th className="p-4 font-bold border-b border-gray-700">Status</th>
                             </tr>
@@ -165,6 +167,9 @@ const Admin = () => {
                                         </td>
                                         <td className="p-4">{reg.userId?.college}</td>
                                         <td className="p-4 text-xs">{reg.teamName || '-'}</td>
+                                        <td className="p-4 text-xs text-gray-400">
+                                            {reg.teamMembers && reg.teamMembers.length > 0 ? reg.teamMembers.join(', ') : '-'}
+                                        </td>
                                         <td className="p-4 text-neon-green">₹{reg.amountPaid}</td>
                                         <td className="p-4">
                                             <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${reg.paymentStatus === 'paid' ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'}`}>

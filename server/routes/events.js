@@ -171,6 +171,8 @@ router.post('/register-bundle', async (req, res) => {
             eventCodes, teamName, teamMembers, amountPaid, transactionId
         } = req.body;
 
+        console.log("RECEIVED TEAM MEMBERS FROM CLIENT:", teamMembers, "TYPE IS ARRAY:", Array.isArray(teamMembers));
+
         if (!transactionId) {
             return res.status(400).json({ message: 'Transaction ID is required for verification.' });
         }
@@ -250,7 +252,8 @@ router.post('/register-bundle', async (req, res) => {
                         userId: user._id,
                         name, department, email, phoneNumber,
                         transactionId: registration.transactionId,
-                        paymentStatus: 'pending'
+                        paymentStatus: 'pending',
+                        teamMembers: Array.isArray(teamMembers) ? teamMembers : []
                     });
                 } catch (e) {
                     if (e.code !== 11000) console.error(`Failed to add user to Model ${code}`, e);

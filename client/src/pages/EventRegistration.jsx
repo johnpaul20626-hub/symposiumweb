@@ -29,7 +29,7 @@ const EventRegistration = () => {
         email: '',
         phoneNumber: '',
         teamName: '',
-        teamMembers: [],
+        teamMembers: [], // Array of strings for member names
         transactionId: ''
     });
 
@@ -38,11 +38,66 @@ const EventRegistration = () => {
     const [registering, setRegistering] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    // Fixed Flat Fee
-    const FLAT_FEE = 200;
+    // Determine Dynamic Limitations based on selected Events
+    const [maxMembers, setMaxMembers] = useState(1);
+    const [dynamicFee, setDynamicFee] = useState(200);
+
+    useEffect(() => {
+        if (!selectedEvents || selectedEvents.length === 0) return;
+
+        let calculatedMax = 1;
+
+        selectedEvents.forEach(e => {
+            if (['N-01', 'N-02'].includes(e.code)) {
+                // E-sports (max 4 members total: 1 lead + 3 members)
+                if (4 > calculatedMax) calculatedMax = 4;
+            } else if (e.code === 'N-07') {
+                // 3A Football (max 3 members total: 1 lead + 2 members)
+                if (3 > calculatedMax) calculatedMax = 3;
+            } else if (['T-01', 'T-03', 'T-05', 'T-06', 'N-03', 'N-06'].includes(e.code)) {
+                // Presentation, Connection, Quiz, Carrom, CineQuiz (max 2 members total: 1 lead + 1 member)
+                if (2 > calculatedMax) calculatedMax = 2;
+            }
+        });
+
+        setMaxMembers(calculatedMax);
+
+        // Adjust team arrays if they exceed newly calculated limits when items are unselected
+        if (formData.teamMembers.length > calculatedMax - 1) {
+            setFormData(prev => ({
+                ...prev,
+                teamMembers: prev.teamMembers.slice(0, calculatedMax - 1)
+            }));
+        }
+
+        // Calculate dynamic fee
+        if (selectedEvents.length === 1 && ['N-01', 'N-02', 'N-07'].includes(selectedEvents[0].code)) {
+            setDynamicFee(150);
+        } else {
+            setDynamicFee(200);
+        }
+
+    }, [selectedEvents]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleTeamMemberChange = (index, value) => {
+        const updatedMembers = [...formData.teamMembers];
+        updatedMembers[index] = value;
+        setFormData({ ...formData, teamMembers: updatedMembers });
+    };
+
+    const handleAddMember = () => {
+        if (formData.teamMembers.length < maxMembers - 1) {
+            setFormData({ ...formData, teamMembers: [...formData.teamMembers, ''] });
+        }
+    };
+
+    const handleRemoveMember = (index) => {
+        const updatedMembers = formData.teamMembers.filter((_, i) => i !== index);
+        setFormData({ ...formData, teamMembers: updatedMembers });
     };
 
     const handleTransactionChange = (e) => {
@@ -55,6 +110,13 @@ const EventRegistration = () => {
 
         if (!formData.name || !formData.email || !formData.college || !formData.year || !formData.phoneNumber || !formData.department) {
             setError("Please fill all required fields before proceeding.");
+            return;
+        }
+
+        // Ensure team member names are filled if added
+        const emptyMember = formData.teamMembers.some(m => !m.trim());
+        if (emptyMember) {
+            setError("Please fill all added team member names or remove them.");
             return;
         }
 
@@ -74,7 +136,7 @@ const EventRegistration = () => {
             const payload = {
                 ...formData,
                 eventCodes: selectedEvents.map(e => e.code),
-                amountPaid: FLAT_FEE
+                amountPaid: dynamicFee
             };
 
             await axios.post(`${import.meta.env.VITE_API_URL}/api/events/register-bundle`, payload, {
@@ -177,7 +239,7 @@ const EventRegistration = () => {
                             <p className="text-gray-400 text-sm font-mono mb-6">Bundled Event Pass Validation</p>
 
                             <div className="text-neon-cyan font-bold font-mono text-3xl mb-8 mt-4 border-b border-white/10 pb-4 shadow-sm flex items-center justify-between">
-                                Flat Fee: <span className="bg-neon-cyan/10 px-4 py-1 rounded text-white border border-neon-cyan/30 drop-shadow-[0_0_10px_rgba(0,243,255,0.4)]">₹{FLAT_FEE}</span>
+                                Pass Fee: <span className="bg-neon-cyan/10 px-4 py-1 rounded text-white border border-neon-cyan/30 drop-shadow-[0_0_10px_rgba(0,243,255,0.4)]">₹{dynamicFee}</span>
                             </div>
 
                             <div className="space-y-6">
@@ -269,6 +331,73 @@ const EventRegistration = () => {
                                     <label htmlFor="email" className={labelClasses}>Email Address</label>
                                 </div>
 
+                                {/* Team Members Section (Dynamically shown) */}
+                                {maxMembers > 1 && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="md:col-span-2 mt-6 p-8 border border-neon-cyan/30 bg-black/40 rounded-xl relative shadow-[0_0_20px_rgba(0,243,255,0.05)] overflow-hidden"
+                                    >
+                                        <div className="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-neon-cyan/40 to-neon-purple/40 text-white text-xs font-bold tracking-wider rounded-bl-lg border-b border-l border-white/10">
+                                            MAX: {maxMembers} MEMBERS (Lead + {maxMembers - 1})
+                                        </div>
+                                        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-6 flex items-center gap-3">
+                                            <div className="p-2 bg-neon-cyan/20 rounded-lg">
+                                                <FaUsers className="text-neon-cyan shadow-[0_0_10px_rgba(0,243,255,0.8)]" />
+                                            </div>
+                                            Team Members (Optional)
+                                        </h3>
+
+                                        <div className="space-y-5 mb-6">
+                                            <AnimatePresence>
+                                                {formData.teamMembers.map((member, index) => (
+                                                    <motion.div
+                                                        key={`member-${index}`}
+                                                        initial={{ opacity: 0, x: -20, height: 0 }}
+                                                        animate={{ opacity: 1, x: 0, height: 'auto' }}
+                                                        exit={{ opacity: 0, x: 20, height: 0 }}
+                                                        transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
+                                                        className="flex items-center gap-4"
+                                                    >
+                                                        <div className="relative flex-1 group w-full">
+                                                            <div className="absolute inset-0 bg-gradient-to-r from-neon-cyan/10 to-transparent blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                                            <FaUser className={`${iconClasses} text-neon-cyan`} />
+                                                            <input
+                                                                type="text"
+                                                                placeholder={`Enter Team Member ${index + 1} Name...`}
+                                                                value={member}
+                                                                onChange={(e) => handleTeamMemberChange(index, e.target.value)}
+                                                                className={`${inputClasses} rounded-lg skew-x-0 border-white/20 pl-14 text-lg`}
+                                                            />
+                                                        </div>
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.1, rotate: 90 }}
+                                                            whileTap={{ scale: 0.9 }}
+                                                            type="button"
+                                                            onClick={() => handleRemoveMember(index)}
+                                                            className="text-red-400 p-4 bg-red-500/10 hover:bg-red-500/20 rounded-xl transition-all shadow-inner border border-red-500/20"
+                                                        >
+                                                            <FaTimes />
+                                                        </motion.button>
+                                                    </motion.div>
+                                                ))}
+                                            </AnimatePresence>
+                                        </div>
+
+                                        {formData.teamMembers.length < maxMembers - 1 && (
+                                            <motion.button
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                type="button"
+                                                onClick={handleAddMember}
+                                                className="w-full text-sm text-neon-cyan flex items-center justify-center gap-3 px-6 py-4 rounded-xl border border-dashed border-neon-cyan/50 hover:bg-neon-cyan/10 hover:border-solid transition-all uppercase font-bold tracking-[0.2em] shadow-[inset_0_0_20px_rgba(0,243,255,0.05)]"
+                                            >
+                                                <span className="text-xl leading-none">+</span> ADD SQUAD MEMBER
+                                            </motion.button>
+                                        )}
+                                    </motion.div>
+                                )}
+
                                 <div className="md:col-span-2 mt-8">
                                     <motion.button
                                         whileHover={{ scale: 1.02, x: 5 }}
@@ -277,7 +406,7 @@ const EventRegistration = () => {
                                         className="w-full bg-neon-cyan/20 border border-neon-cyan text-neon-cyan font-black py-5 px-8 shadow-[0_0_20px_rgba(0,243,255,0.1)] hover:shadow-[0_0_30px_rgba(0,243,255,0.4)] hover:bg-neon-cyan hover:text-black transition-all duration-300 uppercase tracking-[0.2em] text-xl clip-path-polygon"
                                         style={{ clipPath: "polygon(0% 0%, 100% 0%, 95% 100%, 0% 100%)" }}
                                     >
-                                        Proceed to Payment (₹{FLAT_FEE})
+                                        Proceed to Payment (₹{dynamicFee})
                                     </motion.button>
                                 </div>
                             </form>
@@ -344,7 +473,7 @@ const EventRegistration = () => {
 
                                 <div className="text-center mb-6 relative z-10 bg-black/40 py-3 rounded-lg border border-white/5">
                                     <p className="text-gray-400 font-mono text-xs uppercase mb-1">Total Pass Fee</p>
-                                    <p className="text-white font-bold text-3xl font-mono">₹{FLAT_FEE}</p>
+                                    <p className="text-white font-bold text-3xl font-mono">₹{dynamicFee}</p>
                                 </div>
 
                                 {error && (

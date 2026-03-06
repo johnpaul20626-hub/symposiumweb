@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { FaRocket, FaGamepad, FaCode, FaUserTie, FaPhoneAlt, FaRobot } from 'react-icons/fa';
+import { FaRocket, FaGamepad, FaCode, FaUserTie, FaPhoneAlt, FaRobot, FaBuilding, FaCalendarAlt, FaRupeeSign, FaBed, FaUtensils, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 
 const Home = () => {
     const targetRef = useRef(null);
@@ -303,6 +303,171 @@ const Home = () => {
                         theme="purple"
                     />
                 </div>
+            </section>
+
+            {/* Accommodation Section */}
+            <section className="relative z-10 py-16 sm:py-24 container mx-auto px-6 border-t border-white/5">
+                <div className="text-center mb-12 sm:mb-16">
+                    <h2 className="text-4xl md:text-5xl font-black font-gaming text-white mb-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                        ACCOMMODATION <span className="text-neon-purple drop-shadow-[0_0_15px_rgba(188,19,254,0.8)]">DETAILS</span>
+                    </h2>
+                    <div className="w-24 h-1 bg-neon-purple mx-auto rounded-full shadow-[0_0_10px_#bc13fe]"></div>
+                    <p className="mt-6 text-gray-300 max-w-2xl mx-auto font-mono text-sm md:text-base leading-relaxed">
+                        Participants coming from other colleges can avail hostel accommodation arranged by the ARTIMUS 2.0 team.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {/* General Info Card */}
+                    <motion.div
+                        whileHover={{ scale: 1.02, y: -5 }}
+                        className="bg-midnight/60 backdrop-blur-md border border-neon-cyan/30 p-8 rounded-2xl shadow-[0_0_20px_rgba(0,243,255,0.1)] hover:shadow-[0_0_30px_rgba(0,243,255,0.3)] transition-all flex flex-col h-full group relative overflow-hidden"
+                    >
+                        {/* Generated Gaming Background with Blur */}
+                        <div className="absolute inset-0 bg-[url('/gaming_card_bg.png')] bg-cover bg-center opacity-30 blur-[2px] group-hover:opacity-50 transition-opacity duration-500 z-0"></div>
+                        <div className="absolute inset-0 bg-black/60 z-0"></div>
+
+                        <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-duration-500 z-0 pointer-events-none"></div>
+
+                        {/* Gaming Grid Background */}
+                        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,243,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,243,255,0.05)_1px,transparent_1px)] bg-[size:20px_20px] z-0 pointer-events-none group-hover:bg-[linear-gradient(rgba(0,243,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,243,255,0.1)_1px,transparent_1px)] transition-colors duration-500"></div>
+
+                        {/* Animated Glowing Orb */}
+                        <motion.div
+                            animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.4, 0.1] }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute -top-10 -right-10 w-40 h-40 bg-neon-cyan/30 blur-[40px] rounded-full z-0 pointer-events-none"
+                        ></motion.div>
+
+                        <div className="relative z-10">
+                            <h3 className="text-3xl font-black font-gaming text-neon-cyan mb-6 flex items-center gap-3 drop-shadow-md">
+                                <FaBuilding className="text-4xl drop-shadow-[0_0_10px_rgba(0,243,255,0.8)]" /> OVERVIEW
+                            </h3>
+                            <ul className="space-y-4 text-white font-mono text-base font-bold tracking-wide">
+                                <li className="flex gap-3"><FaBuilding className="text-neon-cyan mt-1 flex-shrink-0 text-xl" /> <span><strong className="text-neon-cyan uppercase mr-2">Type:</strong> College Hostel</span></li>
+                                <li className="flex gap-3"><FaCalendarAlt className="text-neon-cyan mt-1 flex-shrink-0 text-xl" /> <span><strong className="text-neon-cyan uppercase mr-2">Dates:</strong> During Symposium Event Days</span></li>
+                            </ul>
+                        </div>
+                    </motion.div>
+
+                    {/* Pricing & Food Card */}
+                    <motion.div
+                        whileHover={{ scale: 1.02, y: -5 }}
+                        className="bg-midnight/60 backdrop-blur-md border border-neon-purple/30 p-8 rounded-2xl shadow-[0_0_20px_rgba(188,19,254,0.1)] hover:shadow-[0_0_30px_rgba(188,19,254,0.3)] transition-all flex flex-col h-full group relative overflow-hidden"
+                    >
+                        {/* Generated Gaming Background with Blur */}
+                        <div className="absolute inset-0 bg-[url('/gaming_card_bg.png')] bg-cover bg-center opacity-30 blur-[2px] group-hover:opacity-50 transition-opacity duration-500 z-0"></div>
+                        <div className="absolute inset-0 bg-black/60 z-0"></div>
+
+                        <div className="absolute inset-0 bg-gradient-to-br from-neon-purple/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-duration-500 z-0 pointer-events-none"></div>
+
+                        {/* Gaming Grid Background */}
+                        <div className="absolute inset-0 bg-[linear-gradient(rgba(188,19,254,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(188,19,254,0.05)_1px,transparent_1px)] bg-[size:20px_20px] z-0 pointer-events-none group-hover:bg-[linear-gradient(rgba(188,19,254,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(188,19,254,0.1)_1px,transparent_1px)] transition-colors duration-500"></div>
+
+                        {/* Animated Glowing Orb */}
+                        <motion.div
+                            animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.4, 0.1] }}
+                            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute -bottom-10 -left-10 w-40 h-40 bg-neon-purple/30 blur-[40px] rounded-full z-0 pointer-events-none"
+                        ></motion.div>
+
+                        <div className="relative z-10">
+                            <h3 className="text-3xl font-black font-gaming text-neon-purple mb-6 flex items-center gap-3 drop-shadow-md">
+                                <FaRupeeSign className="text-4xl drop-shadow-[0_0_10px_rgba(188,19,254,0.8)]" /> TARIFFS
+                            </h3>
+                            <div className="space-y-4">
+                                <div className="p-4 bg-white/10 border border-white/20 rounded-lg flex justify-between items-center group-hover:border-neon-purple/50 transition-colors backdrop-blur-sm shadow-inner">
+                                    <div>
+                                        <p className="font-black text-white text-2xl tracking-widest drop-shadow-md">₹300</p>
+                                        <p className="text-sm text-neon-purple font-mono mt-1 font-bold">+ Food included</p>
+                                    </div>
+                                    <FaUtensils className="text-white text-3xl opacity-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]" />
+                                </div>
+                                <div className="p-4 bg-white/5 border border-white/10 rounded-lg flex justify-between items-center group-hover:border-white/30 transition-colors backdrop-blur-sm">
+                                    <div>
+                                        <p className="font-extrabold text-gray-200 text-xl tracking-widest drop-shadow-sm">₹200</p>
+                                        <p className="text-sm text-gray-400 font-mono mt-1 font-bold">Stay only <span className="text-gray-500">(No food)</span></p>
+                                    </div>
+                                    <FaBed className="text-gray-400 text-3xl opacity-80" />
+                                </div>
+                                <p className="text-sm text-gray-300 font-mono mt-4 flex gap-2 font-bold"><FaUtensils className="text-neon-purple mt-0.5 text-lg" />Food includes: Breakfast, Lunch, Dinner</p>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Facilities & Rules */}
+                    <motion.div
+                        whileHover={{ scale: 1.02, y: -5 }}
+                        className="bg-midnight/60 backdrop-blur-md border border-neon-green/30 p-8 rounded-2xl shadow-[0_0_20px_rgba(0,255,100,0.1)] hover:shadow-[0_0_30px_rgba(0,255,100,0.3)] transition-all flex flex-col h-full group relative overflow-hidden md:col-span-2 lg:col-span-1"
+                    >
+                        {/* Generated Gaming Background with Blur */}
+                        <div className="absolute inset-0 bg-[url('/gaming_card_bg.png')] bg-cover bg-center opacity-30 blur-[2px] group-hover:opacity-50 transition-opacity duration-500 z-0"></div>
+                        <div className="absolute inset-0 bg-black/60 z-0"></div>
+
+                        <div className="absolute inset-0 bg-gradient-to-br from-neon-green/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-duration-500 z-0 pointer-events-none"></div>
+
+                        {/* Gaming Grid Background */}
+                        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,255,100,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,100,0.05)_1px,transparent_1px)] bg-[size:20px_20px] z-0 pointer-events-none group-hover:bg-[linear-gradient(rgba(0,255,100,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,100,0.1)_1px,transparent_1px)] transition-colors duration-500"></div>
+
+                        {/* Animated Glowing Scanline effect */}
+                        <motion.div
+                            animate={{ y: ['-100%', '300%'] }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                            className="absolute top-0 left-0 right-0 h-1 bg-neon-green/50 shadow-[0_0_20px_rgba(0,255,100,0.8)] z-0 pointer-events-none"
+                        ></motion.div>
+
+                        <div className="relative z-10">
+                            <h3 className="text-3xl font-black font-gaming text-neon-green mb-6 flex items-center gap-3 drop-shadow-md">
+                                <FaCheckCircle className="text-4xl drop-shadow-[0_0_10px_rgba(0,255,100,0.8)]" /> FACILITIES
+                            </h3>
+                            <ul className="space-y-4 text-white font-mono text-base font-bold tracking-wide mb-6">
+                                <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-neon-green shadow-[0_0_8px_rgba(0,255,100,0.9)]"></div> Safe hostel stay</li>
+                                <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-neon-green shadow-[0_0_8px_rgba(0,255,100,0.9)]"></div> Basic bedding arrangements</li>
+                                <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-neon-green shadow-[0_0_8px_rgba(0,255,100,0.9)]"></div> Drinking water facility</li>
+                                <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-neon-green shadow-[0_0_8px_rgba(0,255,100,0.9)]"></div> Washroom access</li>
+                            </ul>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Important Instructions Banner */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="mt-8 bg-black/60 border border-red-500/30 rounded-2xl p-6 md:p-8 shadow-[0_0_30px_rgba(255,0,0,0.2)] backdrop-blur-md relative overflow-hidden group"
+                >
+                    {/* Animated Warning Grid */}
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,0,0,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,0,0,0.05)_1px,transparent_1px)] bg-[size:30px_30px] z-0 pointer-events-none"></div>
+
+                    {/* Left Animated Warning Bar */}
+                    <div className="absolute left-0 top-0 bottom-0 w-2 bg-red-600 shadow-[0_0_20px_#ff0000] z-10"></div>
+                    <motion.div
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute left-0 top-0 bottom-0 w-2 bg-red-400 blur-[5px] z-10"
+                    ></motion.div>
+
+                    <div className="flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left relative z-10">
+                        <div className="text-red-500 text-5xl md:text-6xl animate-pulse">
+                            <FaExclamationTriangle />
+                        </div>
+                        <div className="flex-1">
+                            <h4 className="text-xl font-bold font-gaming text-white mb-3 tracking-wide">CRITICAL DIRECTIVES</h4>
+                            <ul className="space-y-2 text-gray-300 font-mono text-sm md:text-base">
+                                <li className="flex gap-2"><span className="text-red-400 font-bold">»</span> Participants MUST carry their college ID card.</li>
+                                <li className="flex gap-2"><span className="text-red-400 font-bold">»</span> Provided on a first come, first served basis.</li>
+                                <li className="flex gap-2"><span className="text-red-400 font-bold">»</span> Strict adherence to hostel rules and discipline is mandatory.</li>
+                            </ul>
+                        </div>
+                        <div className="flex flex-col items-center justify-center p-4 bg-black/40 border border-white/10 rounded-xl">
+                            <FaPhoneAlt className="text-neon-cyan mb-2 text-xl" />
+                            <p className="text-xs text-gray-400 font-mono tracking-wider mb-1">BOOKING CONTACT</p>
+                            <p className="text-sm text-white font-bold text-center">Contact Event Coordinators<br />during Registration.</p>
+                        </div>
+                    </div>
+                </motion.div>
             </section>
 
             {/* Payment QR Section */}
