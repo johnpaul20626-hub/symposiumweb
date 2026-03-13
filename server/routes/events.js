@@ -28,7 +28,7 @@ const EVENTS = {
         type: 'Technical',
         coordinators: [
             { name: 'Allen Christopher', phone: '91503 25101' },
-            { name: 'Samuel Joseph', phone: '' }
+            { name: 'Samuel Joseph', phone: '63692 01696' }
         ],
         image: '/assets/paper_presentation.jpg'
     },
@@ -38,7 +38,7 @@ const EVENTS = {
         type: 'Technical',
         coordinators: [
             { name: 'Maria Juliana', phone: '63822 87627' },
-            { name: 'Angelina Rochine', phone: '63806 81099' }
+            { name: 'Angelina Roshini', phone: '63806 81099' }
         ],
         image: '/assets/ai_hunt.jpg'
     },
@@ -58,7 +58,7 @@ const EVENTS = {
         type: 'Technical',
         coordinators: [
             { name: 'Kuralarasu', phone: '97515 92260' },
-            { name: 'Sai Eswaran', phone: '' }
+            { name: 'Sai Eswaran', phone: '96775 40616' }
         ],
         image: '/assets/ai_hunt.jpg'
     },
@@ -79,8 +79,8 @@ const EVENTS = {
         fee: 100,
         type: 'Non-Technical',
         coordinators: [
-            { name: 'Sanjay', phone: '' },
-            { name: 'Thanislass James', phone: '' }
+            { name: 'Sanjay', phone: '93456 52079' },
+            { name: 'Thanislass James', phone: '97517 63724' }
         ],
         image: '/assets/ai_hunt.jpg'
     },
@@ -90,7 +90,7 @@ const EVENTS = {
         type: 'Non-Technical',
         coordinators: [
             { name: 'Vibin Joseph', phone: '97862 54790' },
-            { name: 'Sri Subahesan', phone: '' }
+            { name: 'Sri Subanesan', phone: '77081 56638' }
         ],
         image: '/assets/paper_presentation.jpg'
     },
@@ -100,7 +100,7 @@ const EVENTS = {
         type: 'Non-Technical',
         coordinators: [
             { name: 'Mithun', phone: '73391 10775' },
-            { name: 'Joel', phone: '93451 34454' }
+            { name: 'Joel Devanesan', phone: '93451 34454' }
         ],
         image: '/assets/ai_hunt.jpg'
     },
@@ -130,7 +130,7 @@ const EVENTS = {
         type: 'Non-Technical',
         coordinators: [
             { name: 'Sharan R', phone: '63697 48808' },
-            { name: 'Indija', phone: '94432 21554' }
+            { name: 'Induja', phone: '94432 21554' }
         ],
         image: '/assets/paper_presentation.jpg'
     },
@@ -138,7 +138,10 @@ const EVENTS = {
         name: '3A Football',
         fee: 100,
         type: 'Non-Technical',
-        coordinators: [],
+        coordinators: [
+            { name: 'Denilson pinto', phone: '82489 76952' },
+            { name: 'Sivaranganath', phone: '93600 19141' }
+        ],
         image: '/assets/ai_hunt.jpg'
     }
 };
