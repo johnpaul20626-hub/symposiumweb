@@ -363,16 +363,17 @@ const Events = () => {
                                             </h3>
                                             <div className={`h-0.5 bg-neon-purple mb-4 transition-all duration-500 ${isSelected ? 'w-full' : 'w-12 group-hover:w-full'}`}></div>
 
-                                            <div className="flex justify-between items-center mb-4 text-sm text-gray-300 font-mono">
+                                            <div className="flex justify-between items-center mb-2 text-sm text-gray-300 font-mono">
                                                 <span>LOCATION</span>
-                                                <a
-                                                    href="https://maps.app.goo.gl/YRpo99N7d8Anh75m6"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-neon-cyan font-bold text-md hover:underline decoration-neon-cyan underline-offset-4"
-                                                >
-                                                    AI DS dept
-                                                </a>
+                                                <span className="text-neon-cyan font-bold text-xs sm:text-sm text-right max-w-[60%] truncate">
+                                                    {event.location || 'College Campus'}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between items-center mb-4 text-sm text-gray-300 font-mono">
+                                                <span>DAY</span>
+                                                <span className="text-neon-purple font-bold text-md text-right max-w-[60%]">
+                                                    {event.day || 'Day 1'}
+                                                </span>
                                             </div>
 
                                             <div className="mb-4">

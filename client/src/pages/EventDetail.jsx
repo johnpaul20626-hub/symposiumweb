@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { FaUserFriends, FaMoneyBillWave, FaTrophy, FaArrowLeft, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaUserFriends, FaMoneyBillWave, FaTrophy, FaArrowLeft, FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
 
 const EventDetail = () => {
     const { id } = useParams();
@@ -71,21 +71,25 @@ const EventDetail = () => {
                             {event.description}
                         </p>
 
-                        <div className="grid grid-cols-2 gap-4 mb-10">
-                            <a
-                                href="https://maps.app.goo.gl/YRpo99N7d8Anh75m6"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="bg-gray-900 border border-white/10 p-4 rounded-xl hover:border-neon-cyan transition-colors group cursor-pointer"
-                            >
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+                            <div className="bg-gray-900 border border-white/10 p-4 rounded-xl group">
                                 <FaMapMarkerAlt className="text-neon-cyan text-xl mb-2 group-hover:scale-110 transition-transform" />
                                 <div className="text-gray-500 text-xs uppercase group-hover:text-neon-cyan transition-colors">Location</div>
-                                <div className="text-lg font-bold truncate">AI DS dept</div>
-                            </a>
-                            <div className="bg-gray-900 border border-white/10 p-4 rounded-xl">
+                                <div className="text-sm md:text-base font-bold truncate" title={event.location || 'College Campus'}>
+                                    {event.location || 'College Campus'}
+                                </div>
+                            </div>
+                            <div className="bg-gray-900 border border-white/10 p-4 rounded-xl group">
+                                <FaCalendarAlt className="text-neon-purple text-xl mb-2 group-hover:scale-110 transition-transform" />
+                                <div className="text-gray-500 text-xs uppercase group-hover:text-neon-purple transition-colors">Day</div>
+                                <div className="text-base font-bold truncate">
+                                    {event.day || 'Day 1'}
+                                </div>
+                            </div>
+                            <div className="col-span-2 md:col-span-1 bg-gray-900 border border-white/10 p-4 rounded-xl">
                                 <FaTrophy className="text-gaming-accent text-xl mb-2" />
                                 <div className="text-gray-500 text-xs uppercase">First Prize</div>
-                                <div className="text-2xl font-bold">{event.prize}</div>
+                                <div className="text-2xl font-bold truncate">{event.prize}</div>
                             </div>
                         </div>
 

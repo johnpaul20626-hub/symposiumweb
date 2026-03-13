@@ -30,7 +30,9 @@ const EVENTS = {
             { name: 'Allen Christopher', phone: '91503 25101' },
             { name: 'Samuel Joseph', phone: '63692 01696' }
         ],
-        image: '/assets/paper_presentation.jpg'
+        image: '/assets/paper_presentation.jpg',
+        location: 'IT SMART CLASS/LAB',
+        day: 'Day 1'
     },
     'T-02': {
         name: 'AI-Hunt',
@@ -40,7 +42,9 @@ const EVENTS = {
             { name: 'Maria Juliana', phone: '63822 87627' },
             { name: 'Angelina Roshini', phone: '63806 81099' }
         ],
-        image: '/assets/ai_hunt.jpg'
+        image: '/assets/ai_hunt.jpg',
+        location: 'ENTRANCE OF DEPT/ LAB',
+        day: 'Day 1'
     },
     'T-03': {
         name: 'Connection',
@@ -50,7 +54,9 @@ const EVENTS = {
             { name: 'John Paul', phone: '63854 23996' },
             { name: 'Salini', phone: '96005 31583' }
         ],
-        image: '/assets/paper_presentation.jpg'
+        image: '/assets/paper_presentation.jpg',
+        location: 'EEE SEMINAR HALL',
+        day: 'Day 1'
     },
     'T-04': {
         name: '3D-Show',
@@ -60,7 +66,9 @@ const EVENTS = {
             { name: 'Kuralarasu', phone: '97515 92260' },
             { name: 'Sai Eswaran', phone: '96775 40616' }
         ],
-        image: '/assets/ai_hunt.jpg'
+        image: '/assets/ai_hunt.jpg',
+        location: 'Ai&ds smart room',
+        day: 'Day 1'
     },
     'T-05': {
         name: 'Quiz',
@@ -70,7 +78,9 @@ const EVENTS = {
             { name: 'Yalini', phone: '90802 68792' },
             { name: 'Epsiba', phone: '63855 51062' }
         ],
-        image: '/assets/paper_presentation.jpg'
+        image: '/assets/paper_presentation.jpg',
+        location: 'Hall 10',
+        day: 'Day 1'
     },
 
     // Non-Technical Events
@@ -82,7 +92,9 @@ const EVENTS = {
             { name: 'Sanjay', phone: '93456 52079' },
             { name: 'Thanislass James', phone: '97517 63724' }
         ],
-        image: '/assets/ai_hunt.jpg'
+        image: '/assets/ai_hunt.jpg',
+        location: '3rd yr ai&ds class',
+        day: 'Day 2'
     },
     'N-02': {
         name: 'E-Sports (Free-Fire)',
@@ -92,7 +104,9 @@ const EVENTS = {
             { name: 'Vibin Joseph', phone: '97862 54790' },
             { name: 'Sri Subanesan', phone: '77081 56638' }
         ],
-        image: '/assets/paper_presentation.jpg'
+        image: '/assets/paper_presentation.jpg',
+        location: '3rd yr ai&ds class',
+        day: 'Day 2'
     },
     'N-03': {
         name: 'Carrom',
@@ -102,7 +116,9 @@ const EVENTS = {
             { name: 'Mithun', phone: '73391 10775' },
             { name: 'Joel Devanesan', phone: '93451 34454' }
         ],
-        image: '/assets/ai_hunt.jpg'
+        image: '/assets/ai_hunt.jpg',
+        location: '2nd yr ai&ds class/ai&ds lab',
+        day: 'Day 2'
     },
     'N-04': {
         name: 'Start Music',
@@ -112,7 +128,9 @@ const EVENTS = {
             { name: 'Sharon', phone: '93429 26132' },
             { name: 'Saravanan', phone: '80725 63525' }
         ],
-        image: '/assets/paper_presentation.jpg'
+        image: '/assets/paper_presentation.jpg',
+        location: 'Ai&ds class no:11',
+        day: 'Day 2'
     },
     'N-05': {
         name: 'Chess',
@@ -122,7 +140,9 @@ const EVENTS = {
             { name: 'Saran Raj', phone: '95858 70355' },
             { name: 'Daniel Prince', phone: '88254 45026' }
         ],
-        image: '/assets/ai_hunt.jpg'
+        image: '/assets/ai_hunt.jpg',
+        location: '2nd yr ai&ds class/ai&ds lab',
+        day: 'Day 2'
     },
     'N-06': {
         name: 'Cine Quiz',
@@ -132,7 +152,9 @@ const EVENTS = {
             { name: 'Sharan R', phone: '63697 48808' },
             { name: 'Induja', phone: '94432 21554' }
         ],
-        image: '/assets/paper_presentation.jpg'
+        image: '/assets/paper_presentation.jpg',
+        location: 'Ai&ds smart class',
+        day: 'Day 2'
     },
     'N-07': {
         name: '3A Football',
@@ -142,7 +164,9 @@ const EVENTS = {
             { name: 'Denilson pinto', phone: '82489 76952' },
             { name: 'Sivaranganath', phone: '93600 19141' }
         ],
-        image: '/assets/ai_hunt.jpg'
+        image: '/assets/ai_hunt.jpg',
+        location: 'College ground',
+        day: 'Day 2'
     }
 };
 
