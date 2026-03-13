@@ -6,116 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaCheck, FaShoppingCart, FaTimes, FaInfoCircle } from 'react-icons/fa';
 import axios from 'axios';
 
-const EVENT_RULES = {
-    'Chess': `**Rules:**
-• The objective of the game is to checkmate the opponent’s king.
-• The chessboard has 64 squares arranged in an 8×8 grid.
-• Each player starts with 16 pieces: 1 King, 1 Queen, 2 Rooks, 2 Bishops, 2 Knights, 8 Pawns
-• **King** – Moves one square in any direction.
-• **Queen** – Moves any number of squares in any direction.
-• **Rook** – Moves horizontally or vertically.
-• **Bishop** – Moves diagonally.
-• **Knight** – Moves in an L-shape.
-• **Pawn** – Moves forward one square (two squares on first move) and captures diagonally.
-• The player who checkmates the opponent’s king wins the match.`,
-
-    'Carrom': `**Common Rules:**
-• Disturbing the coins while playing will be considered a foul.
-• For each foul, one coin will be returned to the board.
-• Points are not considered.
-• Potting the opponent’s coin when the last coin is left will be considered a loss.
-• Matches will be conducted in knockout format.
-
-**Doubles:**
-• Thumbing is not allowed.
-
-**Singles:**
-• Thumbing is allowed if both players agree.`,
-
-    'Quiz': `**Team Formation:**
-• Participants can play individually or in teams (2–4 members).
-• Each team must choose a team name and register before the quiz begins.
-
-**Quiz Format:**
-• The quiz will contain different rounds such as General Knowledge & Technical / Subject-based Round.
-• Each round will have a fixed number of questions.
-
-**Question Rules:**
-• The quizmaster will read each question only once.
-• Teams will get 30 seconds to answer.
-• Mobile phones and internet usage are strictly prohibited.
-• No discussion with the audience.
-
-**Scoring System:**
-• Correct answer → +10 marks
-• Wrong answer → –5 marks
-• No answer → 0 marks
-• Unanswered questions may be passed to another team.
-
-**Discipline:**
-• Participants must maintain silence, no arguments. The quizmaster’s decision is final.`,
-
-    'Cine Quiz': `**Eligibility:**
-• Open to all registered participants.
-• Participants can play individually or in teams (2–3 members).
-
-**Quiz Format:**
-• 🎥 Visual Round (identify movie/actor)
-• 🎧 Audio Round (identify song/dialogue)
-• ⚡ Rapid Fire Round
-• ❓ Direct Question Round
-
-**Scoring:**
-• Correct answer → +10 points.
-• Wrong answer → –5 points (depending on the round).
-• Passed questions may be answered by other teams for bonus points.`,
-
-    'Connection': `**Rules:**
-• Participants must raise their hand to answer.
-• The team that raises their hand first gets the chance to answer.
-• Teams must identify the connection between the given clues.
-• The team scoring the maximum points wins.`,
-
-    'AI-Hunt': `**Rules:**
-• Teams must consist of 3–5 members.
-• Only one mobile phone per team is allowed for scanning QR codes.
-• Start from the first QR code at the starting point.
-• Each QR code reveals a clue to the next location.
-• Skipping checkpoints or sharing answers is strictly prohibited.
-• Any unfair practice will lead to disqualification.
-• The team that completes all checkpoints first wins.
-• If time ends, the team with the most completed checkpoints wins.
-• Participants must follow campus discipline and avoid damaging QR codes.
-• Final checkpoint verification is mandatory.`,
-
-    'E-Sports (Free-Fire)': `**Rules:**
-• Mobile-only tournament.
-• Game mode: Battle Royale.
-• No hacks or cheats allowed.
-• No glitch exploitation.
-• Tournament will be conducted in E-sports mode.
-• The last surviving player/team becomes the champion.`,
-
-    'E-Sports (PES)': `**Rules:**
-• All participants must have updated eFootball by Konami installed.
-• The organizer will create a Friend Match Room before the match.
-• The Room ID will be shared only with selected players.
-• Match duration (half length) will be decided before the game.
-• Extra time and penalties will be enabled if required.
-• Players must select teams on time.
-• Standard football rules like offside, fouls, and cards apply.
-• Players must ensure a stable internet connection.
-• Fair play must be maintained; intentional disconnection is not allowed.
-• Match results will be recorded after completion.`,
-
-    '3D-Show': `**Rules:**
-• Participants must sit in their designated seats.
-• Maintain silence during the presentation.
-• Collect 3D glasses before the show.
-• Return the glasses after the show.
-• Handle all equipment carefully.`
-};
-
 const Events = () => {
     const [events, setEvents] = useState([]);
     const [filter, setFilter] = useState('All');
@@ -408,9 +298,9 @@ const Events = () => {
                                                     {!isSelected && <div className="absolute inset-0 bg-neon-cyan translate-y-[100%] group-hover/btn:translate-y-[0%] transition-transform duration-300 ease-out z-0"></div>}
                                                 </button>
 
-                                                {EVENT_RULES[event.name] && (
+                                                {event.rules && event.rules.length > 0 && (
                                                     <button
-                                                        onClick={() => setActiveRuleModal({ name: event.name, type: event.type })}
+                                                        onClick={() => setActiveRuleModal({ name: event.name, type: event.type, rules: event.rules })}
                                                         className="px-4 py-3 bg-white/5 border border-white/20 text-white rounded-xl hover:bg-white hover:text-black hover:border-white transition-all duration-300 flex items-center justify-center shadow-[0_0_10px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.6)]"
                                                         title="Read Rules"
                                                     >
@@ -473,20 +363,26 @@ const Events = () => {
                             {/* Modal Content - Scrollable */}
                             <div className="p-6 md:p-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
                                 <div className="space-y-4 text-gray-300 font-sans leading-relaxed text-sm md:text-base">
-                                    {EVENT_RULES[activeRuleModal.name]?.split('\n').map((line, idx) => {
-                                        if (line.startsWith('**') && line.endsWith('**')) {
-                                            return <h4 key={idx} className={`text-lg font-bold mt-6 mb-2 ${activeRuleModal.type === 'Technical' ? 'text-neon-cyan' : 'text-neon-purple'}`}>{line.replace(/\*\*/g, '')}</h4>;
-                                        }
-                                        if (line.startsWith('•')) {
+                                    {activeRuleModal.rules?.map((rule, idx) => {
+                                        const isHeader = rule.includes(":") && rule.split(":")[0].length < 30;
+                                        if (isHeader) {
+                                            const parts = rule.split(":");
                                             return (
-                                                <div key={idx} className="flex gap-3 items-start p-2 hover:bg-white/5 rounded-lg transition-colors">
-                                                    <span className={activeRuleModal.type === 'Technical' ? 'text-neon-cyan mt-1' : 'text-neon-purple mt-1'}>🎮</span>
-                                                    <span dangerouslySetInnerHTML={{ __html: line.substring(1).replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>') }} />
+                                                <div key={idx} className="mt-4">
+                                                    <h4 className={`text-lg font-bold mb-2 ${activeRuleModal.type === 'Technical' ? 'text-neon-cyan' : 'text-neon-purple'}`}>{parts[0]}:</h4>
+                                                    <div className="flex gap-3 items-start p-2 hover:bg-white/5 rounded-lg transition-colors">
+                                                        <span className={activeRuleModal.type === 'Technical' ? 'text-neon-cyan mt-1' : 'text-neon-purple mt-1'}>🎮</span>
+                                                        <span>{parts.slice(1).join(":")}</span>
+                                                    </div>
                                                 </div>
-                                            );
+                                            )
                                         }
-                                        if (line.trim() === '') return <br key={idx} />;
-                                        return <p key={idx}>{line}</p>;
+                                        return (
+                                            <div key={idx} className="flex gap-3 items-start p-2 hover:bg-white/5 rounded-lg transition-colors">
+                                                <span className={activeRuleModal.type === 'Technical' ? 'text-neon-cyan mt-1' : 'text-neon-purple mt-1'}>🎮</span>
+                                                <span>{rule}</span>
+                                            </div>
+                                        );
                                     })}
                                 </div>
                             </div>
