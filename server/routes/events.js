@@ -89,7 +89,7 @@ const EVENTS = {
         fee: 50,
         type: 'Non-Technical',
         coordinators: [
-            { name: 'Sanjay', phone: '93456 52079' },
+            { name: 'Varshan', phone: '88386 05090' },
             { name: 'Thanislass James', phone: '97517 63724' }
         ],
         image: '/assets/ai_hunt.jpg',
@@ -125,7 +125,7 @@ const EVENTS = {
         fee: 100,
         type: 'Non-Technical',
         coordinators: [
-            { name: 'Sharon', phone: '93429 26132' },
+            { name: 'Sowmiya', phone: '94886 87566' },
             { name: 'Saravanan', phone: '80725 63525' }
         ],
         image: '/assets/paper_presentation.jpg',
@@ -195,13 +195,13 @@ router.post('/register-bundle', async (req, res) => {
     try {
         let {
             name, department, college, year, email, phoneNumber,
-            eventCodes, teamName, teamMembers, amountPaid, transactionId
+            eventCodes, teamName, teamMembers, amountPaid, transactionId, paymentMode
         } = req.body;
 
         console.log("RECEIVED TEAM MEMBERS FROM CLIENT:", teamMembers, "TYPE IS ARRAY:", Array.isArray(teamMembers));
 
-        if (!transactionId) {
-            return res.status(400).json({ message: 'Transaction ID is required for verification.' });
+        if (paymentMode === 'online' && !transactionId) {
+            return res.status(400).json({ message: 'Transaction ID is required for online verification.' });
         }
 
         if (!eventCodes || !Array.isArray(eventCodes) || eventCodes.length === 0) {
@@ -265,6 +265,7 @@ router.post('/register-bundle', async (req, res) => {
             teamName,
             teamMembers: Array.isArray(teamMembers) ? teamMembers : [],
             paymentStatus: 'pending',
+            paymentMode: paymentMode,
             transactionId: transactionId,
             amountPaid
         });
@@ -280,6 +281,7 @@ router.post('/register-bundle', async (req, res) => {
                         name, department, college, year, email, phoneNumber,
                         transactionId: registration.transactionId,
                         paymentStatus: 'pending',
+                        paymentMode: paymentMode,
                         teamMembers: Array.isArray(teamMembers) ? teamMembers : []
                     });
                 } catch (e) {

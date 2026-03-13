@@ -9,6 +9,7 @@ const schema = new mongoose.Schema({
     phoneNumber: { type: String },
     email: { type: String },
     paymentStatus: { type: String, enum: ['pending', 'paid'], default: 'pending' },
+    paymentMode: { type: String, enum: ['online', 'spot'], default: 'online' },
     transactionId: { type: String },
     teamMembers: [String],
     registeredAt: { type: Date, default: Date.now }

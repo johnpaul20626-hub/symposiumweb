@@ -37,6 +37,7 @@ const EventRegistration = () => {
     const [error, setError] = useState('');
     const [registering, setRegistering] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [paymentMode, setPaymentMode] = useState('online'); // 'online' or 'spot'
 
     // Determine Dynamic Limitations based on selected Events
     const [maxMembers, setMaxMembers] = useState(1);
@@ -130,7 +131,7 @@ const EventRegistration = () => {
     };
 
     const handleFinalSubmit = async () => {
-        if (!formData.transactionId || formData.transactionId.length < 5) {
+        if (paymentMode === 'online' && (!formData.transactionId || formData.transactionId.length < 5)) {
             setError("Please enter a valid Transaction ID.");
             return;
         }
@@ -142,7 +143,8 @@ const EventRegistration = () => {
             const payload = {
                 ...formData,
                 eventCodes: selectedEvents.map(e => e.code),
-                amountPaid: dynamicFee
+                amountPaid: dynamicFee,
+                paymentMode: paymentMode
             };
 
             await axios.post(`${import.meta.env.VITE_API_URL}/api/events/register-bundle`, payload, {
@@ -447,35 +449,52 @@ const EventRegistration = () => {
                                     <FaTimes className="text-xl" />
                                 </button>
 
-                                <h2 className="text-3xl font-black font-gaming text-white text-center mb-2 relative z-10">AUTHORIZE PAYMENT</h2>
-                                <p className="text-neon-cyan text-center mb-8 text-sm uppercase tracking-widest font-mono relative z-10">Secure Transaction Protocol</p>
+                                <div className="flex gap-4 mb-8 relative z-10 justify-center">
+                                    <button
+                                        onClick={() => setPaymentMode('online')}
+                                        className={`px-6 py-2 rounded-full font-bold uppercase tracking-wider text-sm transition-all border ${paymentMode === 'online' ? 'bg-neon-cyan/20 border-neon-cyan text-neon-cyan shadow-[0_0_15px_rgba(0,243,255,0.4)]' : 'bg-transparent border-gray-600 text-gray-400 hover:border-neon-cyan/50 hover:text-neon-cyan'}`}
+                                    >
+                                        Online Payment
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setPaymentMode('spot');
+                                            setFormData(prev => ({ ...prev, transactionId: 'PAY-ON-SPOT' }));
+                                        }}
+                                        className={`px-6 py-2 rounded-full font-bold uppercase tracking-wider text-sm transition-all border ${paymentMode === 'spot' ? 'bg-neon-purple/20 border-neon-purple text-neon-purple shadow-[0_0_15px_rgba(188,19,254,0.4)]' : 'bg-transparent border-gray-600 text-gray-400 hover:border-neon-purple/50 hover:text-neon-purple'}`}
+                                    >
+                                        Pay on Spot
+                                    </button>
+                                </div>
 
-                                <div className="relative group p-[2px] rounded-3xl bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-cyan bg-[length:200%_auto] animate-gradient shadow-[0_0_50px_rgba(0,243,255,0.1)] mx-auto max-w-sm w-full mb-8 z-10">
-                                    <div className="relative bg-[#f6f8fb] p-6 rounded-3xl flex flex-col items-center overflow-hidden z-10 w-full">
+                                {paymentMode === 'online' && (
+                                    <div className="relative group p-[2px] rounded-3xl bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-cyan bg-[length:200%_auto] animate-gradient shadow-[0_0_50px_rgba(0,243,255,0.1)] mx-auto max-w-sm w-full mb-8 z-10">
+                                        <div className="relative bg-[#f6f8fb] p-6 rounded-3xl flex flex-col items-center overflow-hidden z-10 w-full">
 
-                                        <div className="flex items-center gap-3 mb-5 relative z-10 w-full">
-                                            <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border border-gray-300 flex-shrink-0">
-                                                <img src="https://ui-avatars.com/api/?name=TREASURER&background=4CAF50&color=fff" alt="User" className="w-full h-full object-cover" />
+                                            <div className="flex items-center gap-3 mb-5 relative z-10 w-full">
+                                                <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border border-gray-300 flex-shrink-0">
+                                                    <img src="https://ui-avatars.com/api/?name=TREASURER&background=4CAF50&color=fff" alt="User" className="w-full h-full object-cover" />
+                                                </div>
+                                                <span className="text-gray-700 font-sans font-medium text-lg tracking-wide shadow-sm">TREASURER</span>
                                             </div>
-                                            <span className="text-gray-700 font-sans font-medium text-lg tracking-wide shadow-sm">TREASURER</span>
-                                        </div>
 
-                                        <div className="relative z-10 w-52 h-52 bg-white rounded-2xl p-2 shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex items-center justify-center mb-5">
-                                            <img src="/qr.jpeg" alt="Payment QR" className="w-full h-full object-cover rounded-xl" onError={(e) => {
-                                                e.target.style.display = 'none';
-                                                e.target.nextSibling.style.display = 'flex';
-                                            }} />
-                                            <div className="hidden w-full h-full items-center justify-center bg-gray-50 flex-col text-gray-400 text-xs text-center border-dashed border-2 border-gray-200 rounded-xl px-2">
-                                                <span className="mb-1 block">Place 'qr.jpeg' in public</span>
-                                                <FaQrcode className="text-4xl text-gray-300 mt-2" />
+                                            <div className="relative z-10 w-52 h-52 bg-white rounded-2xl p-2 shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex items-center justify-center mb-5">
+                                                <img src="/qr.jpeg" alt="Payment QR" className="w-full h-full object-cover rounded-xl" onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.nextSibling.style.display = 'flex';
+                                                }} />
+                                                <div className="hidden w-full h-full items-center justify-center bg-gray-50 flex-col text-gray-400 text-xs text-center border-dashed border-2 border-gray-200 rounded-xl px-2">
+                                                    <span className="mb-1 block">Place 'qr.jpeg' in public</span>
+                                                    <FaQrcode className="text-4xl text-gray-300 mt-2" />
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div className="text-center relative z-10 w-full border-t border-gray-200 pt-3">
-                                            <p className="text-gray-600 mb-1 font-sans text-sm">UPI ID: <span className="text-gray-800 font-bold">marvel80008@okhdfcbank</span></p>
+                                            <div className="text-center relative z-10 w-full border-t border-gray-200 pt-3">
+                                                <p className="text-gray-600 mb-1 font-sans text-sm">UPI ID: <span className="text-gray-800 font-bold">marvel80008@okhdfcbank</span></p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
 
                                 <div className="text-center mb-6 relative z-10 bg-black/40 py-3 rounded-lg border border-white/5">
                                     <p className="text-gray-400 font-mono text-xs uppercase mb-1">Total Pass Fee</p>
@@ -489,19 +508,21 @@ const EventRegistration = () => {
                                 )}
 
                                 <div className="space-y-6 relative z-10">
-                                    <div className="relative group">
-                                        <input
-                                            type="text"
-                                            id="transactionId"
-                                            name="transactionId"
-                                            placeholder="Enter UPI Transaction ID"
-                                            value={formData.transactionId}
-                                            onChange={handleTransactionChange}
-                                            required
-                                            className={`${inputClasses} bg-black/80 text-center font-mono tracking-widest text-lg`}
-                                        />
-                                        <label htmlFor="transactionId" className={`${labelClasses} text-center w-full left-0`}>UPI Transaction ID Verification</label>
-                                    </div>
+                                    {paymentMode === 'online' && (
+                                        <div className="relative group">
+                                            <input
+                                                type="text"
+                                                id="transactionId"
+                                                name="transactionId"
+                                                placeholder="Enter UPI Transaction ID"
+                                                value={formData.transactionId === 'PAY-ON-SPOT' ? '' : formData.transactionId}
+                                                onChange={handleTransactionChange}
+                                                required={paymentMode === 'online'}
+                                                className={`${inputClasses} bg-black/80 text-center font-mono tracking-widest text-lg`}
+                                            />
+                                            <label htmlFor="transactionId" className={`${labelClasses} text-center w-full left-0`}>UPI Transaction ID Verification</label>
+                                        </div>
+                                    )}
 
                                     <button
                                         onClick={handleFinalSubmit}

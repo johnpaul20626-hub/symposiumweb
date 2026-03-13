@@ -30,6 +30,11 @@ const registrationSchema = new mongoose.Schema({
         enum: ['pending', 'paid', 'failed'],
         default: 'pending'
     },
+    paymentMode: {
+        type: String,
+        enum: ['online', 'spot'],
+        default: 'online'
+    },
     transactionId: { type: String },
     amountPaid: { type: Number, required: true },
     paymentScreenshot: { type: String }, // Path to uploaded file
