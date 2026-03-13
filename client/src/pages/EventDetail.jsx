@@ -109,11 +109,18 @@ const EventDetail = () => {
                     <div className="bg-gray-900/50 border border-white/5 rounded-3xl p-8 backdrop-blur-sm">
                         <h3 className="text-2xl font-bold font-gaming mb-6 border-b border-gray-700 pb-4">Rules & Regulations</h3>
                         <ul className="space-y-4 text-gray-300 list-disc pl-5 marker:text-neon-purple">
-                            <li>Valid College ID is mandatory.</li>
-                            <li>Participants must report 15 mins before kick-off.</li>
-                            <li>Judges' decision is final and binding.</li>
-                            <li>Respect the code of conduct at all times.</li>
-                            {/* Add more generic or specific rules here */}
+                            {event.rules && event.rules.length > 0 ? (
+                                event.rules.map((rule, idx) => (
+                                    <li key={idx}>{rule}</li>
+                                ))
+                            ) : (
+                                <>
+                                    <li>Valid College ID is mandatory.</li>
+                                    <li>Participants must report 15 mins before kick-off.</li>
+                                    <li>Judges' decision is final and binding.</li>
+                                    <li>Respect the code of conduct at all times.</li>
+                                </>
+                            )}
                         </ul>
                     </div>
                 </div>
