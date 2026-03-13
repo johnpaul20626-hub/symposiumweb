@@ -86,7 +86,7 @@ const EVENTS = {
     // Non-Technical Events
     'N-01': {
         name: 'E-Sports (PES)',
-        fee: 100,
+        fee: 50,
         type: 'Non-Technical',
         coordinators: [
             { name: 'Sanjay', phone: '93456 52079' },
@@ -277,7 +277,7 @@ router.post('/register-bundle', async (req, res) => {
                 try {
                     await EventModel.create({
                         userId: user._id,
-                        name, department, email, phoneNumber,
+                        name, department, college, year, email, phoneNumber,
                         transactionId: registration.transactionId,
                         paymentStatus: 'pending',
                         teamMembers: Array.isArray(teamMembers) ? teamMembers : []

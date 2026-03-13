@@ -267,7 +267,9 @@ const Events = () => {
                                     <div className="flex flex-row items-center gap-6 w-full md:w-auto border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
                                         <div className="flex flex-col">
                                             <span className="text-gray-400 text-xs font-mono uppercase">Total Pass Fee</span>
-                                            <span className="text-neon-cyan font-black text-3xl">₹{selectedEvents.length === 1 && ['N-01', 'N-02', 'N-07'].includes(selectedEvents[0].code) ? 150 : 200}</span>
+                                            <span className="text-neon-cyan font-black text-3xl">
+                                                ₹{selectedEvents.length === 1 ? (selectedEvents[0].code === 'N-01' ? 50 : (['N-02', 'N-07'].includes(selectedEvents[0].code) ? 150 : 200)) : 200}
+                                            </span>
                                         </div>
 
                                         <motion.button

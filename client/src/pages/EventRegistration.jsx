@@ -48,8 +48,8 @@ const EventRegistration = () => {
         let calculatedMax = 1;
 
         selectedEvents.forEach(e => {
-            if (['N-01', 'N-02'].includes(e.code)) {
-                // E-sports (max 4 members total: 1 lead + 3 members)
+            if (['N-02'].includes(e.code)) {
+                // Free-Fire (max 4 members total: 1 lead + 3 members)
                 if (4 > calculatedMax) calculatedMax = 4;
             } else if (e.code === 'N-07') {
                 // 3A Football (max 3 members total: 1 lead + 2 members)
@@ -71,8 +71,14 @@ const EventRegistration = () => {
         }
 
         // Calculate dynamic fee
-        if (selectedEvents.length === 1 && ['N-01', 'N-02', 'N-07'].includes(selectedEvents[0].code)) {
-            setDynamicFee(150);
+        if (selectedEvents.length === 1) {
+            if (selectedEvents[0].code === 'N-01') {
+                setDynamicFee(50);
+            } else if (['N-02', 'N-07'].includes(selectedEvents[0].code)) {
+                setDynamicFee(150);
+            } else {
+                setDynamicFee(200);
+            }
         } else {
             setDynamicFee(200);
         }

@@ -4,6 +4,8 @@ const schema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     name: { type: String },
     department: { type: String },
+    year: { type: String },
+    college: { type: String },
     phoneNumber: { type: String },
     email: { type: String },
     paymentStatus: { type: String, enum: ['pending', 'paid'], default: 'pending' },
