@@ -7,7 +7,7 @@ import { FaRocket, FaGamepad, FaCode, FaUserTie, FaPhoneAlt, FaRobot, FaBuilding
 
 const Home = () => {
     const targetRef = useRef(null);
-    const [stats, setStats] = useState({ events: '10+', participants: '500+', prizePool: '₹5K+' });
+    const [stats, setStats] = useState({ events: '10+', participants: '500+', prizePool: '₹12K+' });
 
     useEffect(() => {
         const fetchStats = async () => {

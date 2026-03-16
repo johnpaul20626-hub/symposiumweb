@@ -71,20 +71,11 @@ const EventRegistration = () => {
             }));
         }
 
-        // Calculate dynamic fee
-        if (selectedEvents.length === 1) {
-            if (selectedEvents[0].code === 'N-01') {
-                setDynamicFee(50);
-            } else if (['N-02', 'N-07'].includes(selectedEvents[0].code)) {
-                setDynamicFee(150);
-            } else {
-                setDynamicFee(200);
-            }
-        } else {
-            setDynamicFee(200);
-        }
+        // Calculate dynamic fee based on number of participants (50 rupees per head)
+        const numberOfPeople = 1 + formData.teamMembers.length;
+        setDynamicFee(numberOfPeople * 50);
 
-    }, [selectedEvents]);
+    }, [selectedEvents, formData.teamMembers.length]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

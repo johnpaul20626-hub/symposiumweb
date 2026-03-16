@@ -24,7 +24,7 @@ const EventModels = {
 const EVENTS = {
     'T-01': {
         name: 'Paper Presentation',
-        fee: 100,
+        fee: 50,
         type: 'Technical',
         coordinators: [
             { name: 'Allen Christopher', phone: '91503 25101' },
@@ -45,7 +45,7 @@ const EVENTS = {
     },
     'T-02': {
         name: 'AI-Hunt',
-        fee: 100,
+        fee: 50,
         type: 'Technical',
         coordinators: [
             { name: 'Maria Juliana', phone: '63822 87627' },
@@ -65,7 +65,7 @@ const EVENTS = {
     },
     'T-03': {
         name: 'Connection',
-        fee: 100,
+        fee: 50,
         type: 'Technical',
         coordinators: [
             { name: 'John Paul', phone: '63854 23996' },
@@ -87,7 +87,7 @@ const EVENTS = {
     },
     'T-04': {
         name: '3D-Show',
-        fee: 100,
+        fee: 50,
         type: 'Technical',
         coordinators: [
             { name: 'Kuralarasu', phone: '97515 92260' },
@@ -105,7 +105,7 @@ const EVENTS = {
     },
     'T-05': {
         name: 'Quiz',
-        fee: 100,
+        fee: 50,
         type: 'Technical',
         coordinators: [
             { name: 'Yalini', phone: '90802 68792' },
@@ -152,7 +152,7 @@ const EVENTS = {
     },
     'N-02': {
         name: 'E-Sports (Free-Fire)',
-        fee: 100,
+        fee: 50,
         type: 'Non-Technical',
         coordinators: [
             { name: 'Vibin Joseph', phone: '97862 54790' },
@@ -170,7 +170,7 @@ const EVENTS = {
     },
     'N-03': {
         name: 'Carrom',
-        fee: 100,
+        fee: 50,
         type: 'Non-Technical',
         coordinators: [
             { name: 'Mithun', phone: '73391 10775' },
@@ -191,7 +191,7 @@ const EVENTS = {
     },
     'N-04': {
         name: 'Start Music',
-        fee: 100,
+        fee: 50,
         type: 'Non-Technical',
         coordinators: [
             { name: 'Sowmiya', phone: '94886 87566' },
@@ -210,7 +210,7 @@ const EVENTS = {
     },
     'N-05': {
         name: 'Chess',
-        fee: 100,
+        fee: 50,
         type: 'Non-Technical',
         coordinators: [
             { name: 'Saran Raj', phone: '95858 70355' },
@@ -232,7 +232,7 @@ const EVENTS = {
     },
     'N-06': {
         name: 'Cine Quiz',
-        fee: 100,
+        fee: 50,
         type: 'Non-Technical',
         coordinators: [
             { name: 'Sharan R', phone: '63697 48808' },
@@ -252,7 +252,7 @@ const EVENTS = {
     },
     'N-07': {
         name: '3A Football',
-        fee: 100,
+        fee: 50,
         type: 'Non-Technical',
         coordinators: [
             { name: 'Denilson pinto', phone: '82489 76952' },
@@ -289,7 +289,7 @@ router.get('/stats', async (req, res) => {
         res.json({
             events: totalEvents,
             participants: totalRegistrations,
-            prizePool: '₹5K+'
+            prizePool: '₹12K+'
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

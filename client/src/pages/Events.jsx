@@ -158,7 +158,7 @@ const Events = () => {
                                         <div className="flex flex-col">
                                             <span className="text-gray-400 text-xs font-mono uppercase">Total Pass Fee</span>
                                             <span className="text-neon-cyan font-black text-3xl">
-                                                ₹{selectedEvents.length === 1 ? (selectedEvents[0].code === 'N-01' ? 50 : (['N-02', 'N-07'].includes(selectedEvents[0].code) ? 150 : 200)) : 200}
+                                                ₹50 <span className="text-sm font-bold text-gray-400">/ person</span>
                                             </span>
                                         </div>
 
