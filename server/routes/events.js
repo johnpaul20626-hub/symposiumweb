@@ -72,7 +72,7 @@ const EVENTS = {
             { name: 'Salini', phone: '96005 31583' }
         ],
         image: '/assets/paper_presentation.jpg',
-        location: 'EEE SEMINAR HALL',
+        location: 'AI and DS smart class',
         day: 'Day 1',
         rules: [
             "Each team gets limited time",
